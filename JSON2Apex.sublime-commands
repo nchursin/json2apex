@@ -1,0 +1,3 @@
+[
+	{ "caption": "JSON2Apex: Convert JSON example to Apex class", "command": "json_to_apex" }
+]
