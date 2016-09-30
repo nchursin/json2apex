@@ -57,7 +57,6 @@ def getClassName(prop, key):
 	return className
 
 def generatePatternFromSample (api_object, cName):
-	# TODO: change pattern structure to implement the above sample
 	pattern = Pattern(cName, 'public', False)
 	dics = {}
 	for key, value in api_object.items():
@@ -84,7 +83,7 @@ def generateClass (pattern):
 	return res
 
 def generateFromSample (root_object):
-	classDfn = 'public class API{\n'
+	classDfn = 'public class API\n{\n'
 	root_pattern = {}
 	first_result = generatePatternFromSample (root_object, 'Root_object')
 	dics = first_result['dics']

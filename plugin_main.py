@@ -23,10 +23,11 @@ class ExampleCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		self.view.insert(edit, 0, "Hello, World!")
 
-class TestapexCommand(sublime_plugin.TextCommand):
+class JsontoapexCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		contents = self.view.substr(sublime.Region(0, self.view.size()))
 		api_object = json.loads(contents)
 		gen = JSON2ApexLib.generateFromSample(api_object)
-		newfile = sublime.active_window().new_file()
-		newfile.insert(edit, 0, "\n" + gen)
+		apexClass = sublime.active_window().new_file()
+		apexClass.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
+		apexClass.insert(edit, 0, "\n" + gen)
