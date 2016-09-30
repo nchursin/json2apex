@@ -17,7 +17,7 @@ if 'helpers.PatternClass' in sys.modules:
 # import helpers.reloader
 import helpers.JSON2ApexLib as JSON2ApexLib
 import helpers.PatternClass as PatternClass
-print(PatternClass)
+# print(PatternClass)
 
 class ExampleCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -28,4 +28,5 @@ class TestapexCommand(sublime_plugin.TextCommand):
 		contents = self.view.substr(sublime.Region(0, self.view.size()))
 		api_object = json.loads(contents)
 		gen = JSON2ApexLib.generateFromSample(api_object)
-		self.view.insert(edit, 0, "\n" + gen)
+		newfile = sublime.active_window().new_file()
+		newfile.insert(edit, 0, "\n" + gen)
