@@ -6,9 +6,9 @@ I've googled a tool for Apex class autogeneration from JSON sample, but found on
 So I've made this.
 
 ###How to use it
-Since I didn't publish it to Package Control yet, in order to use you have to:
+Since I haven't published it to Package Control yet, in order to use you have to:
 
-1. Clone this repo to `your_sublime_dir/Packages/`. Restart Sublime Text 3 if needed
+1. Clone this repo to `your_sublime_dir/Packages/`. Restart Sublime if needed
 2. Get a JSON response or request sample
 3. Open it in Sublime Text 3
 4. Using `Ctrl+Shit+P` (or `⌘+Shift+P` on Mac) find `JSON2Apex: Convert sample to Apex`
@@ -23,4 +23,4 @@ Add a jumping between generated class names for easy renaming
 ###Other plans
 1. Add XML convertion
 2. Add generation from JSON schema
-
+3. Online version
