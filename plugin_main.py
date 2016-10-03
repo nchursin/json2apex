@@ -21,13 +21,24 @@ import helpers.PatternClass as PatternClass
 
 class JsonToApexCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
-		contents = self.view.substr(sublime.Region(0, self.view.size()))
+		api_object = self.getContent()
+		if(api_object is not None):
+			self.generateCode(edit, api_object)
+
+	def getContent(self):
 		try:
+			contents = self.view.substr(sublime.Region(0, self.view.size()))
 			api_object = json.loads(contents)
+			return api_object
 		except ValueError:
 			sublime.error_message('Invalid JSON')
-		else:
-			gen = JSON2ApexLib.generateFromSample(api_object)
-			apexClass = sublime.active_window().new_file()
-			apexClass.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
-			apexClass.insert(edit, 0, "\n" + gen)
+			return None
+
+	def generateCode(self, edit, api_object):
+		converter = JSON2ApexLib.SampleConverter()
+		gen = converter.generateFromSample(api_object)
+		apexClass = sublime.active_window().new_file()
+		apexClass.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
+		apexClass.insert(edit, 0, "\n" + gen)
+		del(converter)
+			
