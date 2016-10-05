@@ -1,5 +1,5 @@
 #JSON2Apex 
-####A Sublime Text 3 plugin for easy convertion of JSON samples to Salesforce Apex code.
+####A Sublime Text 3 plugin to generate Salesforce Apex classes from JSON samples.
 
 Ever developed a Salesforce integration with a huge JSON objects coming both ways? Even though you only need to do it ones it's pretty annoying to create a wrapper manually.
 I've googled a tool for Apex class autogeneration from JSON sample, but found only 2 tools, none of which did satisfy me.
