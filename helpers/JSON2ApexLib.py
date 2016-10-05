@@ -92,7 +92,7 @@ class SampleConverter:
 			className = key.capitalize() + 'Class'
 			classCheck = self.checkIsClassGenerated(value, className)
 			if None == classCheck:
-				genRes = generatePatternFromSample(value, className)
+				genRes = self.generatePatternFromSample(value, className)
 				root_pattern[key] = genRes['pattern'].class_pattern
 
 				classDfn += genRes['pattern'].generateCode('\t')
