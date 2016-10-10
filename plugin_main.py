@@ -49,53 +49,59 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
 		self.apexClassView.insert(edit, 0, "\n" + gen)
 
-		self.apexClassView.sel().clear()
-		s = self.classList[2]
-		matches = self.apexClassView.find_all(s)
-		self.apexClassView.sel().add_all(matches)
+		# self.apexClassView.sel().clear()
+		# s = self.classList[2]
+		# matches = self.apexClassView.find_all(s)
+		# self.apexClassView.sel().add_all(matches)
 		self.renameClass()
 		
-		print(matches)
+		# print(matches)
 
 		del(converter)
 
 	def renameClass(self):
 		args = {
-			'apexView': self.apexClassView,
 			'classList': self.classList
 		}
-		# self.apexClassView.begin_edit(0, '')
-		self.apexClassView.run_command('launch_class_renaming', { 'apexView': self.apexClassView, 'classList': self.classList })
+		print(args)
+		edit = self.apexClassView.begin_edit(0, '')
+		self.apexClassView.run_command('launch_class_renaming', args)
 
 class LaunchClassRenamingCommand(sublime_plugin.TextCommand):
 	apexView = {}
 	classList = []
 	oldClassName = ''
 
-	def run(self, edit, apexView, classList):
-		self.apexView = apexView
+	def run(self, edit, classList):
+		self.apexView = self.view
 		self.classList = classList
 		curWin = self.apexView.window()
 		self.oldClassName = self.classList.pop(0)
+
+		matches = self.apexView.find_all(self.oldClassName)
+		self.apexView.sel().clear()
+		self.apexView.sel().add_all(matches)
+
 		curWin.show_input_panel('Rename ' + self.oldClassName, self.oldClassName, self.rename, None, None)
 
-	def rename(newName):
+	def rename(self, newName):
 		args = {
 			'oldClassName': self.oldClassName,
 			'newClassName': newName,
-			'apexView': self.apexView,
 			'classList': self.classList
 		}
 		self.apexView.run_command('rename_apex_class', args)
 
 class RenameApexClassCommand(sublime_plugin.TextCommand):
-	def run(self, edit, oldClassName, newClassName, apexView, classList):
-		matches = apexView.find_all(oldClassName)
+	def run(self, edit, oldClassName, newClassName, classList):
+		matches = self.view.find_all(oldClassName)
+		reg_end = 0
 		for m in matches:
-			apexView.replace(edit, m, newClassName)
+			cur_m = self.view.find(oldClassName, reg_end)
+			reg_end = m.end()
+			self.view.replace(edit, cur_m, newClassName)
 		if(0 < len(classList)):
 			args = {
-				'apexView': apexView,
 				'classList': classList
 			}
-			apexView.run_command('launch_class_renaming', args)
+			self.view.run_command('launch_class_renaming', args)
