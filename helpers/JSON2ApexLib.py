@@ -49,7 +49,10 @@ class SampleConverter:
 		elif type(None) == type(prop):
 			className = 'String'
 		elif list == type(prop):
-			className = 'List<' + self.getClassName(prop[0], key) + '>'
+			if(0 < len(prop)):
+				className = 'List<' + self.getClassName(prop[0], key) + '>'
+			else:
+				className = 'List<' + key.capitalize() + 'Class' + '>'
 		else:
 			className = types[type(prop)]
 		return className
@@ -64,7 +67,7 @@ class SampleConverter:
 			if dict == type(value):
 				dics[key] = value
 			if className_str.startswith('List<'):
-				if dict == type(value[0]):
+				if 0 < len(value) and dict == type(value[0]):
 					dics[className] = value[0]
 
 		return {
@@ -110,6 +113,9 @@ class SampleConverter:
 				classDfn = classDfn.replace(' ' + oldClassName + ' ', ' ' + className + ' ')
 
 		classDfn += '\n}\n'
+
+		# list(d.values())
+		# print(list(self.formedClasses.values()))
 
 		return classDfn
 
