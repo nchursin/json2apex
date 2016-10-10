@@ -15,8 +15,6 @@ Since I haven't published it to Package Control yet, in order to use you have to
 5. Press Enter
 6. You will see generated Apex code. Also a text input appears in the bottom of the buffer. Use this input to change generated class names quickly.
 
-You've got formatted Apex class opened in a new buffer. You can change class names or just copy it to your project.
-
 ###Nearest future
 Add XML convertion
 
