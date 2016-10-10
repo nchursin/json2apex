@@ -13,14 +13,13 @@ Since I haven't published it to Package Control yet, in order to use you have to
 3. Open it in Sublime Text 3
 4. Using `Ctrl+Shit+P` (or `⌘+Shift+P` on Mac) find `JSON2Apex: Convert sample to Apex`
 5. Press Enter
-6. Voila!
+6. You will see generated Apex code. Also a text input appears in the bottom of the buffer. Use this input to change generated class names quickly.
 
 You've got formatted Apex class opened in a new buffer. You can change class names or just copy it to your project.
 
 ###Nearest future
-Add a jumping between generated class names for easy renaming
+Add XML convertion
 
 ###Other plans
-1. Add XML convertion
-2. Add generation from JSON schema
-3. Online version
+1. Add generation from JSON schema
+2. Online version
