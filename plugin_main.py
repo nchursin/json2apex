@@ -82,7 +82,8 @@ class LaunchClassRenamingCommand(sublime_plugin.TextCommand):
 		self.apexView.sel().clear()
 		self.apexView.sel().add_all(matches)
 
-		curWin.show_input_panel('Rename ' + self.oldClassName, self.oldClassName, self.rename, None, None)
+		tryout = curWin.show_input_panel('Rename ' + self.oldClassName, self.oldClassName, self.rename, None, None)
+		tryout.sel().add(tryout.visible_region())
 
 	def rename(self, newName):
 		args = {
@@ -105,3 +106,5 @@ class RenameApexClassCommand(sublime_plugin.TextCommand):
 				'classList': classList
 			}
 			self.view.run_command('launch_class_renaming', args)
+		else:
+			self.view.sel().add(sublime.Region(0, self.view.size()))
