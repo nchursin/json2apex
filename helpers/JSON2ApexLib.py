@@ -19,6 +19,14 @@ types = {
 	'float': 'Double'
 }
 
+def find_between( s, first, last ):
+    try:
+        start = s.index( first ) + len( first )
+        end = s.index( last, start )
+        return s[start:end]
+    except ValueError:
+        return ""
+
 class SampleConverter:
 	formedClasses = {}
 	classReplacers = {}
@@ -36,9 +44,13 @@ class SampleConverter:
 		props = list(api_object.keys())
 		props.sort()
 		props = ','.join(props)
+		if '<' in className:
+			className = find_between( className.capitalize(), '<', 'class>' )
+			className = className.capitalize() + 'Class'
 		if props in self.formedClasses:
 			return self.formedClasses[props]
 		else:
+			print ('adding to generated => ', className)
 			self.formedClasses[props] = className
 			return None
 
