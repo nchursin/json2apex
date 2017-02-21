@@ -96,6 +96,7 @@ class SampleConverter:
 		return res
 
 	def generateFromSample (self, root_object):
+		self.contents = json.dumps(root_object, separators=(',',':'))
 		classDfn = 'public class API\n{\n'
 		root_pattern = {}
 		first_result = self.generatePatternFromSample(root_object, 'Root_object')
@@ -124,12 +125,29 @@ class SampleConverter:
 				oldClassName = c
 				classDfn = classDfn.replace(' ' + oldClassName + ' ', ' ' + className + ' ')
 
+		classDfn += self.generateTest()
 		classDfn += '\n}\n'
 
 		# list(d.values())
 		# print(list(self.formedClasses.values()))
 
 		return classDfn
+
+
+	def generateTest(self):
+		if None != self.contents:
+			test_method = '\n\t@isTest\n'
+			test_method += '\tprivate static void testParser(){\n'
+			test_method += '\t\ttry{\n'
+			test_method += '\t\t\tRoot_object r = (Root_object)JSON.deserialize(\'' +self.contents+ '\', Root_object.class);\n'
+			test_method += '\t\t\tSystem.assert(true); // no error during parse\n'
+			test_method += '\t\t} catch (Exception ex){\n'
+			test_method += '\t\t\tSystem.assert(false, \'Parse failed for Root_object\');\n'
+			test_method += '\t\t}\n'
+			test_method += '\t}\n'
+			return test_method
+		else:
+			return ''
 
 
 # def generateFromSchema(schema):
