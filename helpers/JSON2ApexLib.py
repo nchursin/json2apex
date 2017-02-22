@@ -142,7 +142,7 @@ class SampleConverter:
 			test_method += '\t\t\tRoot_object r = (Root_object)JSON.deserialize(\'' +self.contents+ '\', Root_object.class);\n'
 			test_method += '\t\t\tSystem.assert(true); // no error during parse\n'
 			test_method += '\t\t} catch (Exception ex){\n'
-			test_method += '\t\t\tSystem.assert(false, \'Parse failed for Root_object\');\n'
+			test_method += '\t\t\tSystem.assert(false, \'Parse failed for Root_object: \' + ex.getMessage());\n'
 			test_method += '\t\t}\n'
 			test_method += '\t}\n'
 			return test_method
