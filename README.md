@@ -16,8 +16,9 @@ Since I haven't published it to Package Control yet, in order to use you have to
 6. You will see generated Apex code. Also a text input appears in the bottom of the buffer. Use this input to change generated class names quickly.
 
 ###Nearest future
-Add XML convertion
+Swagger JSON to Apex REST Definition generation
+Add generation from JSON schema
 
 ###Other plans
-1. Add generation from JSON schema
-2. Online version
+Add XML convertion
+Online version
