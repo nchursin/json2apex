@@ -1,0 +1,8 @@
+	// handles {{method}} requests
+	private static Object handle{{method}}() {
+		Object response;
+
+		// TODO: code {{method}} handling here
+
+		return response;
+	}

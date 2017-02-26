@@ -1,0 +1,9 @@
+	@Http{{method}}
+	global static void do{{method}}() {
+		try{
+			storeParams();
+			setupResponse(200, handle{{method}}());
+		} catch ( Exception ex ) {
+			handleException(ex);
+		}
+	}

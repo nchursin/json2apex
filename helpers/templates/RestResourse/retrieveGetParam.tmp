@@ -1,0 +1,2 @@
+		{{paramName}} = {${'requireRequestParam' if requiredGetParam else 'getOptionalRequestParam'}}('{{paramName}}');
+		parameters.put('{{paramName}}', {{paramName}});
