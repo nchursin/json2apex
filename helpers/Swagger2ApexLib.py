@@ -11,7 +11,8 @@ template_dir = 'templates/RestResourse/'
 apexrest = '/services/apexrest'
 defaultClassName = 'RestAPIClass'
 slash = '/'
-definitions = '#/definitions/'
+definitions_const = '#/definitions/'
+inner_classes_access = 'private'
 
 TEMPLATE_CONSTS = {
 	'basePath': '{{basePath}}',
@@ -24,6 +25,8 @@ TEMPLATE_CONSTS = {
 	'pathParamName': '{{pathParamName}}',
 	'method': '{{method}}',
 	'pathParamNumber': '{{pathParamNumber}}',
+	'definitionClasses': '{{definitionClasses}}',
+	'notdefinedClasses': '{{notdefinedClasses}}',
 	'_var': '{{',
 	'_code': '{${',
 	'_end': '}}'
@@ -73,7 +76,7 @@ def compileTemplate(template_name, template_args, debug=False):
 		print('template >> ', template)
 	return template
 
-def parseSchemaForPaths(schema_object, template):
+def parseSchemaForPaths(schema_object):
 	paths = schema_object['paths']
 	processed_paths = []
 	parsers = []
@@ -113,7 +116,7 @@ def parseSchemaForPaths(schema_object, template):
 				i += 1
 	return parsers, retrievers
 					
-def parseSchemaForMethods(schema_object, template):
+def parseSchemaForMethods(schema_object):
 	paths = schema_object['paths']
 	processed_paths = []
 	handlers = []
@@ -134,13 +137,38 @@ def parseSchemaForMethods(schema_object, template):
 			callers.append( compileTemplate( 'methodCaller', template_args ) )
 	return callers, handlers
 
-# def parseSchemaForDefinitions(schema_object, template):
-# 	if 'definitions' in schema_object:
-# 		return None
-# 	definitions = schema_object['definitions']
-# 	for className, defin in definitions:
-# 		if 'object' == defin['type']:
-# 			pass
+def parseSchemaForDefinitions(schema_object):
+	if 'definitions' not in schema_object:
+		return []
+	definitions = schema_object['definitions']
+	code = []
+	for className, defin in definitions.items():
+		gen = parseDefintion(defin, className)
+		code.append( gen )
+	return code
+
+def parseDefintion(definition, def_name):
+	pattern = Pattern(def_name, inner_classes_access)
+	if 'allOf' in definition:
+		parents = definition['allOf']
+		for p in parents:
+			if '$ref' in p:
+				ext = p['$ref']
+				ext = ext.replace(definitions_const, '')
+				if slash in ext:
+					print ('Impossibru!!! Slash found in definition link after removing "#/definitions/"')
+				else:
+					pattern.addParentClass(ext)
+			else:
+				if 'object' == p['type']:
+					addObjectToPattern(pattern, p)
+	elif 'object' == definition['type']:
+		addObjectToPattern(pattern, definition)
+	return pattern.generateCode('\t')
+
+def addObjectToPattern(pattern, definition):
+	for var_name, var_props in definition['properties'].items():
+		pattern.addPublicProperty( var_props['type'].capitalize(), var_name )
 
 def parseSchema(schema_object):
 	apexrest_start = schema_object['basePath'].find(apexrest)
@@ -154,11 +182,14 @@ def parseSchema(schema_object):
 		'template_vars': template_vars
 	}
 	template = compileTemplate('classTemplate', template_args)
-	parsers, retrievers = parseSchemaForPaths(schema_object, template)
-	callers, handlers = parseSchemaForMethods(schema_object, template)
+	parsers, retrievers = parseSchemaForPaths(schema_object)
+	callers, handlers = parseSchemaForMethods(schema_object)
+	predefined_classes = parseSchemaForDefinitions(schema_object)
 	template = template.replace( TEMPLATE_CONSTS['pathParamParsers'], '\n'.join(parsers) )
 	template = template.replace( TEMPLATE_CONSTS['paramRetrievers'], TEMPLATE_CONSTS['paramRetrievers'] + '\n' + '\n'.join(retrievers) )
 	template = template.replace( TEMPLATE_CONSTS['methodCallers'], '\n'.join(callers) )
 	template = template.replace( TEMPLATE_CONSTS['methodHandlers'], '\n'.join(handlers) )
+	template = template.replace( TEMPLATE_CONSTS['methodHandlers'], '\n'.join(handlers) )
+	template = template.replace( TEMPLATE_CONSTS['definitionClasses'], '\n'.join(predefined_classes) )
 	# print('\n\n>>><<<\n\n')
 	print(template)
