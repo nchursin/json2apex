@@ -18,6 +18,10 @@ global with sharing class {{ResourseClassName}}  {
 
 {{pathParamParsers}}
 
+{{getParamParsers}}
+
+{{bodyParsers}}
+
     // stores parameters for further processing
     private static void storeParams(){
         RestRequest req = RestContext.request;

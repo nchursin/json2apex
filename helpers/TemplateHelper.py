@@ -20,6 +20,8 @@ TEMPLATE_CONSTS = {
 	'pathParamNumber': '{{pathParamNumber}}',
 	'definitionClasses': '{{definitionClasses}}',
 	'notdefinedClasses': '{{notdefinedClasses}}',
+	'getParamParsers': '{{getParamParsers}}',
+	'bodyParsers': '{{bodyParsers}}',
 	'_var': '{{',
 	'_code': '{${',
 	'_end': '}}'
