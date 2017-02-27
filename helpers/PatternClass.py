@@ -93,7 +93,7 @@ class Pattern:
     def toJson(self):
         return json.dumps(self.class_pattern)
 
-    def addExtends(self, class_name):
+    def addParentClass(self, class_name):
         self.class_pattern['extends'].append(class_name)
 
     def addInterface(self, interface_name):
