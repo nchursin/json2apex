@@ -32,7 +32,10 @@ global with sharing class {{ResourseClassName}}  {
     }
 
     // Swagger definitions parsed to classes
-    {{definitionClasses}}
+{{definitionClasses}}
+    
+    // Not predefined classes (not from defintions section)
+{{notdefinedClasses}}
 
     // Templated only code
     // exceptionList
