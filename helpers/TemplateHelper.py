@@ -37,7 +37,7 @@ TEMPLATE_CONSTS = {
 # }
 
 class Template():
-	"""Arguments to be passed to template"""
+	"""Template compiler"""
 	def __init__(self, template_name):
 		self.template_name = template_name
 		self.template_args = TemplateArgs()
