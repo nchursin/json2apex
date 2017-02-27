@@ -3,16 +3,28 @@ import os
 import json
 import datetime
 from PatternClass import Pattern as Pattern
+from TemplateHelper import Template as Template
+from TemplateHelper import TemplateArgs as TemplateArgs
 import os.path, imp, json
 # import sublime, sublime_plugin
 
 template_extension = '.tmp'
 template_dir = 'templates/RestResourse/'
+template_path = 'RestResourse/'
 apexrest = '/services/apexrest'
 defaultClassName = 'RestAPIClass'
 slash = '/'
 definitions_const = '#/definitions/'
 inner_classes_access = 'private'
+
+templates = {
+	'classTemplate': template_path + 'classTemplate',
+	'methodCaller': template_path + 'methodCaller',
+	'methodHandler': template_path + 'methodHandler',
+	'pathParamParser': template_path + 'pathParamParser',
+	'retrieveGetParam': template_path + 'retrieveGetParam',
+	'retrievePathParam': template_path + 'retrievePathParam',
+}
 
 TEMPLATE_CONSTS = {
 	'basePath': '{{basePath}}',
@@ -31,50 +43,6 @@ TEMPLATE_CONSTS = {
 	'_code': '{${',
 	'_end': '}}'
 }
-
-def getTemplateCode(template_name):
-	path_to_template = template_dir + template_name + template_extension
-	content = None
-	with open(path_to_template) as f:
-		content = f.read()
-	return content
-
-def compileCode(code, code_locals):
-	code_pure = code.replace(TEMPLATE_CONSTS['_code'],'').replace(TEMPLATE_CONSTS['_end'],'')
-	code_pure = 'output = ' + code_pure
-	compiled = compile(code_pure, '<string>', 'exec')
-	exec(compiled, {}, code_locals)
-	return code_locals['output']
-
-def findCodeOccurence(template):
-	code_end_length = len(TEMPLATE_CONSTS['_end'])
-	code_start = template.find(TEMPLATE_CONSTS['_code'])
-	template_replace = template[code_start:]
-	code_end = code_start + template_replace.find(TEMPLATE_CONSTS['_end']) + code_end_length
-	code_occurence = template[code_start:code_end]
-	return code_occurence
-
-# template_args = {
-# 	code_args:{
-# 		name: value
-# 	},
-# 	template_vars:{
-# 		name: value
-# 	},
-# }
-
-def compileTemplate(template_name, template_args, debug=False):
-	template = getTemplateCode(template_name)
-	code = findCodeOccurence(template)
-	while code:
-		template = template.replace(code, compileCode(code, template_args['code_args']))
-		code = findCodeOccurence(template)
-	for name, placeholder in TEMPLATE_CONSTS.items():
-		if name in template_args['template_vars']:
-			template = template.replace(placeholder, str(template_args['template_vars'][name]))
-	if(debug):
-		print('template >> ', template)
-	return template
 
 def parseSchemaForPaths(schema_object):
 	paths = schema_object['paths']
@@ -98,21 +66,17 @@ def parseSchemaForPaths(schema_object):
 					# 	if var_name == param['name']:
 					# 		required = param['required'];
 					# 		break
-				if var_name in processed_paths:
-					i += 1
-					continue
-				template_vars = {
-					'pathParamName': var_name,
-					'pathParamNumber': i
-				}
-				code_args = {}
-				template_args = {
-					'code_args': code_args,
-					'template_vars': template_vars
-				}
-				processed_paths.append(var_name)
-				parsers.append( compileTemplate( 'pathParamParser', template_args ) )
-				retrievers.append( compileTemplate( 'retrievePathParam', template_args ) )
+				if var_name not in processed_paths:
+					args = TemplateArgs()
+					args.addVar('pathParamName', var_name)
+					args.addVar('pathParamNumber', i)
+					paramParserTemplate = Template(templates['pathParamParser'])
+					paramParserTemplate.addArgs(args)
+					retrievePathParamTemplate = Template(templates['retrievePathParam'])
+					retrievePathParamTemplate.addArgs(args)
+					processed_paths.append(var_name)
+					parsers.append( paramParserTemplate.compile() )
+					retrievers.append( retrievePathParamTemplate.compile() )
 				i += 1
 	return parsers, retrievers
 					
@@ -133,8 +97,14 @@ def parseSchemaForMethods(schema_object):
 				'code_args': {},
 				'template_vars': template_vars
 			}
-			handlers.append( compileTemplate( 'methodHandler', template_args ) )
-			callers.append( compileTemplate( 'methodCaller', template_args ) )
+			args = TemplateArgs()
+			args.addVar('method', method.upper())
+			methodHandlerTemplate = Template(templates['methodHandler'])
+			methodHandlerTemplate.addArgs(args)
+			methodCallerTemplate = Template(templates['methodCaller'])
+			methodCallerTemplate.addArgs(args)
+			handlers.append( methodHandlerTemplate.compile() )
+			callers.append( methodCallerTemplate.compile() )
 	return callers, handlers
 
 def parseSchemaForDefinitions(schema_object):
@@ -173,23 +143,18 @@ def addObjectToPattern(pattern, definition):
 def parseSchema(schema_object):
 	apexrest_start = schema_object['basePath'].find(apexrest)
 	base_path = schema_object['basePath'][(apexrest_start + len(apexrest)):]
-	template_vars = {
-		'basePath': base_path,
-		'ResourseClassName': defaultClassName
-	}
-	template_args = {
-		'code_args': {},
-		'template_vars': template_vars
-	}
-	template = compileTemplate('classTemplate', template_args)
+	class_template = Template(templates['classTemplate'])
+	class_template.addVar('basePath', base_path)
+	class_template.addVar('ResourseClassName', defaultClassName)
+	apex_code = class_template.compile()
 	parsers, retrievers = parseSchemaForPaths(schema_object)
 	callers, handlers = parseSchemaForMethods(schema_object)
 	predefined_classes = parseSchemaForDefinitions(schema_object)
-	template = template.replace( TEMPLATE_CONSTS['pathParamParsers'], '\n'.join(parsers) )
-	template = template.replace( TEMPLATE_CONSTS['paramRetrievers'], TEMPLATE_CONSTS['paramRetrievers'] + '\n' + '\n'.join(retrievers) )
-	template = template.replace( TEMPLATE_CONSTS['methodCallers'], '\n'.join(callers) )
-	template = template.replace( TEMPLATE_CONSTS['methodHandlers'], '\n'.join(handlers) )
-	template = template.replace( TEMPLATE_CONSTS['methodHandlers'], '\n'.join(handlers) )
-	template = template.replace( TEMPLATE_CONSTS['definitionClasses'], '\n'.join(predefined_classes) )
+	apex_code = apex_code.replace( TEMPLATE_CONSTS['pathParamParsers'], '\n'.join(parsers) )
+	apex_code = apex_code.replace( TEMPLATE_CONSTS['paramRetrievers'], TEMPLATE_CONSTS['paramRetrievers'] + '\n' + '\n'.join(retrievers) )
+	apex_code = apex_code.replace( TEMPLATE_CONSTS['methodCallers'], '\n'.join(callers) )
+	apex_code = apex_code.replace( TEMPLATE_CONSTS['methodHandlers'], '\n'.join(handlers) )
+	apex_code = apex_code.replace( TEMPLATE_CONSTS['methodHandlers'], '\n'.join(handlers) )
+	apex_code = apex_code.replace( TEMPLATE_CONSTS['definitionClasses'], ''.join(predefined_classes) )
 	# print('\n\n>>><<<\n\n')
-	print(template)
+	print(apex_code)

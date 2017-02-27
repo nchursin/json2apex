@@ -4,6 +4,9 @@
 			storeParams();
 			setupResponse(200, handle{{method}}());
 		} catch ( Exception ex ) {
+			// converts all Exceptions to RestException
+			// search for "void handleException" to change this
+			// or search for "class RestException" to find swagger defintion for RestException
 			handleException(ex);
 		}
 	}

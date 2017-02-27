@@ -31,6 +31,17 @@ global with sharing class {{ResourseClassName}}  {
         validate();
     }
 
+    // validates everything in the request except for the body
+    private static void validate() {
+        Boolean valid = false;
+
+        // TODO: code validations here
+
+        if(!valid){
+            throw new APIException(400, message);
+        }
+    }
+
     // Swagger definitions parsed to classes
 {{definitionClasses}}
     
@@ -123,15 +134,34 @@ global with sharing class {{ResourseClassName}}  {
             }
             set;
         }
-        public String stacktrace {
-            get{
-                if(null == this.stacktrace && SEND_STACKTRACE){
-                    this.stacktrace = this.getCause().getStackTraceString();
-                }
-                return this.stacktrace;
-            }
-            set;
-        }
+        //Swagger JSON
+        //"Error": {
+        //  "type": "object",
+        //  "required": [
+        //    "message",
+        //    "errorCode"
+        //  ],
+        //  "properties": {
+        //    "message": {
+        //      "type": "string"
+        //    },
+        //    "errorCode": {
+        //      "type": "string"
+        //    }
+        //  }
+        //}
+
+        //Swagger YAML
+        //  Error:
+        //    type: object
+        //    required:
+        //      - message
+        //      - errorCode
+        //    properties:
+        //      message:
+        //        type: string
+        //      errorCode:
+        //        type: string
     }
 
     // API specific exception
@@ -152,15 +182,6 @@ global with sharing class {{ResourseClassName}}  {
         public String JSONFormat(){
             Exception temp = (Exception)JSON.deserialize(JSON.serialize(this), Exception.class);
             return JSON.serialize(temp);
-        }
-    }
-
-    // validates everything in the request except for the body
-    private static void validate() {
-        Boolean valid = false;
-
-        if(!valid){
-            throw new APIException(400, message);
         }
     }
 
