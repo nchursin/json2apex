@@ -134,7 +134,7 @@ global with sharing class {{ResourseClassName}}  {
         }
     }
 
-    // LS API specific exception
+    // API specific exception
     public class APIException extends Exception {
         public Integer statusCode {
             get{
