@@ -1,3 +1,5 @@
+// Class generated from Swagger definition via Json2Apex by Nikita Chursin
+// https://github.com/nchursin/json2apex/
 @RestResource(urlMapping='{{basePath}}/*')
 global with sharing class {{ResourseClassName}}  {
 
@@ -29,6 +31,11 @@ global with sharing class {{ResourseClassName}}  {
         validate();
     }
 
+    // Swagger definitions parsed to classes
+    {{definitionClasses}}
+
+    // Templated only code
+    // exceptionList
     private static List<RestException> exceptionList;
 
     // adds exception to exception list and creates an rest response
