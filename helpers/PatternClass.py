@@ -47,6 +47,7 @@ interface_methods = {
                 {
                     'name': 'compareTo',
                     'static': False,
+                    'todo_comment': 'implement compare logic',
                     'arguments': {
                         'other': 'Object'
                     }
@@ -182,7 +183,6 @@ class Pattern:
             args.addVar('access', method_access)
             for ret_type, methods_list in method_ret_types.items():
                 args.addVar('returnType', ret_type)
-                args.addCodeArgument('returnType', ret_type)
                 for method in methods_list:
                     if 'static' in method and method['static']:
                         args.addVar('static', 'static')
@@ -192,8 +192,13 @@ class Pattern:
                     arg_str = ''
                     for arg_name, arg_type in method['arguments'].items():
                         arg_str += arg_type + ' ' + arg_name + ', '
-                    arg_str = arg_str[:len(arg_str)-2]
+                    if arg_str:
+                        arg_str = arg_str[:len(arg_str)-2]
                     args.addVar('methodArguments', arg_str)
+                    if 'todo_comment' in method and method['todo_comment']:
+                        args.addVar('todo_comment', method['todo_comment'])
+                    else:
+                        args.addVar('todo_comment', '')
                     t = Template('other/Method')
                     t.addArgs(args)
                     method_code = t.compile()
