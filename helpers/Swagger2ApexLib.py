@@ -154,7 +154,7 @@ def parseSchema(schema_object):
 	class_template.addVar('methodCallers', '\n'.join(callers))
 	class_template.addVar('methodHandlers', '\n'.join(handlers))
 	class_template.addVar('methodHandlers', '\n'.join(handlers))
-	class_template.addVar('definitionClasses', '\n'.join(predefined_classes))
+	class_template.addVar('definitionClasses', ''.join(predefined_classes))
 
 	apex_code = class_template.compile()
 	# print('\n\n>>><<<\n\n')
