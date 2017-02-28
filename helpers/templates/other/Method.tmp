@@ -1,0 +1,5 @@
+{{access}} {{static}} {{returnType}} {{methodName}} ({{methodArguments}}){
+	{${'' if 'void' == returnType else '{{returnType}} result;'}}
+
+	{${'' if 'void' == returnType else 'return result;'}}
+}
