@@ -1,5 +1,7 @@
 import os
 import json
+from TemplateHelper import Template
+from TemplateHelper import TemplateArgs
 # import sublime, sublime_plugin
 
 # {
@@ -24,18 +26,16 @@ import json
 #   {
 #       'public':
 #       {
-#           'static':
-#           {
-#               'void':
-#               [
-#                   'name': 'methodName',
-#                   'arguments':
-#                   {
-#                       'String': [],
-#                       'Integer': []
-#                   }
-#               ]
-#           }
+#          'void':
+#          [
+#              'name': 'methodName',
+#              'static': False,
+#              'arguments':
+#              {
+#                  'number': 'Integer',
+#                  'str': 'String'
+#              }
+#          ]
 #       }
 #   }
 # }
@@ -46,10 +46,10 @@ interface_methods = {
             'Integer': [
                 {
                     'name': 'compareTo',
+                    'static': False,
+                    'todo_comment': 'implement compare logic',
                     'arguments': {
-                        'Object': [
-                            'other'
-                        ]
+                        'other': 'Object'
                     }
                 }
             ]
@@ -102,7 +102,7 @@ class Pattern:
             for access_level in interface_methods[interface_name]:
                 for return_type in interface_methods[interface_name][access_level]:
                     if return_type not in self.class_pattern['methods'][access_level]:
-                        self.class_pattern['methods'][access_level][return_type] = {}
+                        self.class_pattern['methods'][access_level][return_type] = []
                     self.class_pattern['methods'][access_level][return_type] += interface_methods[interface_name][access_level][return_type]
 
     def addProperty(self, name, var_type, access, static):
@@ -177,10 +177,37 @@ class Pattern:
         cur_tab = tab + '\t'
         for prop_access,prop_name in p['properties'].items():
             c += self.genPart(p['properties'][prop_access], cur_tab, prop_access)
-        # for prop_access,prop_name in p['methods'].items():
-        #     c += self.genPart(p['methods'][prop_access], cur_tab, prop_access)
-        c += tab + '}\n'
-        return c        
+        methods_code = []
+        for method_access, method_ret_types in p['methods'].items():
+            args = TemplateArgs()
+            args.addVar('access', method_access)
+            for ret_type, methods_list in method_ret_types.items():
+                args.addVar('returnType', ret_type)
+                for method in methods_list:
+                    if 'static' in method and method['static']:
+                        args.addVar('static', 'static')
+                    else:
+                        args.addVar('static', '')
+                    args.addVar('methodName', method['name'])
+                    arg_str = ''
+                    for arg_name, arg_type in method['arguments'].items():
+                        arg_str += arg_type + ' ' + arg_name + ', '
+                    if arg_str:
+                        arg_str = arg_str[:len(arg_str)-2]
+                    args.addVar('methodArguments', arg_str)
+                    if 'todo_comment' in method and method['todo_comment']:
+                        args.addVar('todo_comment', method['todo_comment'])
+                    else:
+                        args.addVar('todo_comment', '')
+                    t = Template('other/Method')
+                    t.addArgs(args)
+                    method_code = t.compile()
+                    method_code = tab + '\t' + method_code.replace('\n', '\n\t' + tab)
+                    methods_code.append(method_code)
+        c += '\n'
+        c += '\n'.join(methods_code)
+        c += '\n' + tab + '}\n'
+        return c
 
     def genPart(self, prop_list, tab, access):
         c = '';
