@@ -20,9 +20,15 @@ TEMPLATE_CONSTS = {
 	'pathParamNumber': '{{pathParamNumber}}',
 	'definitionClasses': '{{definitionClasses}}',
 	'notdefinedClasses': '{{notdefinedClasses}}',
+	'access': '{{access}}',
+	'static': '{{static}}',
+	'returnType': '{{returnType}}',
+	'methodName': '{{methodName}}',
+	'methodArguments': '{{methodArguments}}',
 	'_var': '{{',
 	'_code': '{${',
-	'_end': '}}'
+	'_end': '}}',
+	'_code_end': '}$}'
 }
 
 # template_args = {
@@ -62,16 +68,16 @@ class Template():
 			self.template_args.template_vars[var_name] = var_value
 
 	def findCodeOccurence(self):
-		code_end_length = len(TEMPLATE_CONSTS['_end'])
+		code_end_length = len(TEMPLATE_CONSTS['_code_end'])
 		code_start = self.output.find(TEMPLATE_CONSTS['_code'])
 		template_replace = self.output[code_start:]
-		code_end = code_start + template_replace.find(TEMPLATE_CONSTS['_end']) + code_end_length
+		code_end = code_start + template_replace.find(TEMPLATE_CONSTS['_code_end']) + code_end_length
 		code_occurence = self.output[code_start:code_end]
 		return code_occurence
 
 	def compileCode(self, code):
 		code_locals = self.template_args.code_args
-		code_pure = code.replace(TEMPLATE_CONSTS['_code'],'').replace(TEMPLATE_CONSTS['_end'],'')
+		code_pure = code.replace(TEMPLATE_CONSTS['_code'],'').replace(TEMPLATE_CONSTS['_code_end'],'')
 		code_pure = 'output = ' + code_pure
 		compiled = compile(code_pure, '<string>', 'exec')
 		exec(compiled, {}, code_locals)
