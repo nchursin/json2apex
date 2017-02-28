@@ -25,6 +25,7 @@ TEMPLATE_CONSTS = {
 	'returnType': '{{returnType}}',
 	'methodName': '{{methodName}}',
 	'methodArguments': '{{methodArguments}}',
+	'todo_comment': '{{todo_comment}}',
 	'_var': '{{',
 	'_code': '{${',
 	'_end': '}}',
@@ -98,6 +99,8 @@ class Template():
 					print('str(self.template_args.template_vars[name]) >> ', str(self.template_args.template_vars[name]))
 			if name in self.template_args.template_vars:
 				self.output = self.output.replace(placeholder, str(self.template_args.template_vars[name]))
+			else:
+				self.output = self.output.replace(placeholder, '')
 		if(debug):
 			print('template >> ', self.output)
 		return self.output
