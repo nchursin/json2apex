@@ -33,9 +33,6 @@ TEMPLATE_CONSTS = {
 }
 
 # template_args = {
-# 	code_args:{
-# 		name: value
-# 	},
 # 	template_vars:{
 # 		name: value
 # 	},
@@ -63,8 +60,8 @@ class Template():
 		self.template_args.addCodeArgument(var_name, var_value)
 
 	def addArgs(self, template_args):
-		for ca_name, ca_value in template_args.code_args.items():
-			self.template_args.code_args[ca_name] = ca_value
+		for ca_name, ca_value in template_args.template_vars.items():
+			self.template_args.template_vars[ca_name] = ca_value
 		for var_name, var_value in template_args.template_vars.items():
 			self.template_args.template_vars[var_name] = var_value
 
@@ -77,7 +74,7 @@ class Template():
 		return code_occurence
 
 	def compileCode(self, code):
-		code_locals = self.template_args.code_args
+		code_locals = self.template_args.template_vars
 		code_pure = code.replace(TEMPLATE_CONSTS['_code'],'').replace(TEMPLATE_CONSTS['_code_end'],'')
 		code_pure = 'output = ' + code_pure
 		compiled = compile(code_pure, '<string>', 'exec')
@@ -109,12 +106,11 @@ class Template():
 class TemplateArgs():
 	"""Arguments to be passed to template"""
 	def __init__(self):
-		self.code_args = {}
 		self.template_vars = {}
 
 	def addVar(self, var_name, var_value):
 		self.template_vars[var_name] = var_value
 
 	def addCodeArgument(self, var_name, var_value):
-		self.code_args[var_name] = var_value
+		self.template_vars[var_name] = var_value
 		
