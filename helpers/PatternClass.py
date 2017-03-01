@@ -87,8 +87,6 @@ class Pattern:
         self.name = name
         self.access = access
         self.abstract = abstract
-        self.addInterface('Comparable')
-        self.addInterface('SchedulableContext')
 
     def toJson(self):
         return json.dumps(self.class_pattern)
@@ -201,6 +199,10 @@ class Pattern:
                         args.addVar('todo_comment', method['todo_comment'])
                     else:
                         args.addVar('todo_comment', '')
+                    if 'comment' in method and method['comment']:
+                        args.addVar('comment', method['comment'])
+                    else:
+                        args.addVar('comment', '')
                     t = Template('other/Method')
                     t.addArgs(args)
                     method_code = t.compile()
