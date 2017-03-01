@@ -3,8 +3,7 @@
 		"public": {
 			"Id": [
 				{
-					"name": "getTriggerId",
-					"arguments": {}
+					"name": "getTriggerId"
 				}
 			]
 		}

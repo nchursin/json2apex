@@ -88,6 +88,7 @@ class Pattern:
         self.access = access
         self.abstract = abstract
         self.addInterface('Comparable')
+        self.addInterface('SchedulableContext')
 
     def toJson(self):
         return json.dumps(self.class_pattern)
@@ -190,10 +191,11 @@ class Pattern:
                         args.addVar('static', '')
                     args.addVar('methodName', method['name'])
                     arg_str = ''
-                    for arg_name, arg_type in method['arguments'].items():
-                        arg_str += arg_type + ' ' + arg_name + ', '
-                    if arg_str:
-                        arg_str = arg_str[:len(arg_str)-2]
+                    if 'arguments' in method:
+                        for arg_name, arg_type in method['arguments'].items():
+                            arg_str += arg_type + ' ' + arg_name + ', '
+                        if arg_str:
+                            arg_str = arg_str[:len(arg_str)-2]
                     args.addVar('methodArguments', arg_str)
                     if 'todo_comment' in method and method['todo_comment']:
                         args.addVar('todo_comment', method['todo_comment'])
