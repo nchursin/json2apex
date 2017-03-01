@@ -1,0 +1,11 @@
+{
+	"methods":{
+		"public": {
+			"Id": [
+				{
+					"name": "getTriggerId"
+				}
+			]
+		}
+	}
+}

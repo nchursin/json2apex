@@ -1,0 +1,19 @@
+{
+	"methods":{
+		"public": {
+			"Object": [
+				{
+					"name": "handleMethodCall",
+					"arguments": {
+					    "stubbedObject": "Object",
+					    "stubbedMethodName": "String",
+					    "returnType": "System.Type",
+					    "listOfParamTypes": "List<System.Type>",
+					    "listOfParamNames": "List<String>",
+					    "listOfArgs": "List<Object>"
+					}
+				}
+			]
+		}
+	}
+}
