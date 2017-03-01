@@ -39,6 +39,8 @@ global with sharing class {{ResourseClassName}}  {
     private static void validate() {
         Boolean valid = false;
 
+{{urlValidators}}
+
         // TODO: code validations here
 
         if(!valid){
