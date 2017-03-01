@@ -1,3 +1,4 @@
+{${ '// {{comment}}' if comment else '' }$}
 {{access}} {{static}} {{returnType}} {{methodName}} ({{methodArguments}}){
 	{${'' if 'void' == returnType else '{{returnType}} result;'}$}
 	{${'// TODO: {{todo_comment}}' if todo_comment else ''}$}
