@@ -1,0 +1,16 @@
+{
+	"methods":{
+		"public": {
+			"Integer": [
+				{
+					"name": "compareTo",
+					"static": false,
+					"todo_comment": "implement compare logic",
+					"arguments": {
+					    "other": "Object"
+					}
+				}
+			]
+		}
+	}
+}

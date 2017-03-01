@@ -1,8 +1,23 @@
-import os
+import os, os.path
 import json
 from TemplateHelper import Template
 from TemplateHelper import TemplateArgs
 # import sublime, sublime_plugin
+
+def loadPattern(pattern_name):
+    pattern_ext = '.json'
+    pattern_dir = 'patterns/'
+    pattern_path = pattern_dir + pattern_name + pattern_ext
+    if os.path.isfile(pattern_path):
+        with open(path_to_template) as f:
+            content = f.read()
+        return json.loads(content)
+    else:
+        return None
+
+def loadInterfacePattern(interface_name):
+    interface_dir = 'interface/'
+    return loadPattern(interface_dir + interface_name)
 
 # {
 #   'extends': [],
@@ -40,23 +55,6 @@ from TemplateHelper import TemplateArgs
 #   }
 # }
 
-interface_methods = {
-    'Comparable': {
-        'public': {
-            'Integer': [
-                {
-                    'name': 'compareTo',
-                    'static': False,
-                    'todo_comment': 'implement compare logic',
-                    'arguments': {
-                        'other': 'Object'
-                    }
-                }
-            ]
-        }
-    }
-}
-
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
     return new.join(li)
@@ -89,6 +87,7 @@ class Pattern:
         self.name = name
         self.access = access
         self.abstract = abstract
+        self.addInterface('Comparable')
 
     def toJson(self):
         return json.dumps(self.class_pattern)
@@ -98,12 +97,13 @@ class Pattern:
 
     def addInterface(self, interface_name):
         self.class_pattern['implements'].append(interface_name)
-        if interface_name in interface_methods:
-            for access_level in interface_methods[interface_name]:
-                for return_type in interface_methods[interface_name][access_level]:
+        interface_pattern = loadInterfacePattern(interface_name)
+        if interface_pattern != None:
+            for access_level in interface_pattern['methods']:
+                for return_type in interface_pattern['methods'][access_level]:
                     if return_type not in self.class_pattern['methods'][access_level]:
                         self.class_pattern['methods'][access_level][return_type] = []
-                    self.class_pattern['methods'][access_level][return_type] += interface_methods[interface_name][access_level][return_type]
+                    self.class_pattern['methods'][access_level][return_type] += interface_pattern['methods'][access_level][return_type]
 
     def addProperty(self, name, var_type, access, static):
         toAdd = []
