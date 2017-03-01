@@ -9,7 +9,7 @@ def loadPattern(pattern_name):
     pattern_dir = 'patterns/'
     pattern_path = pattern_dir + pattern_name + pattern_ext
     if os.path.isfile(pattern_path):
-        with open(path_to_template) as f:
+        with open(pattern_path) as f:
             content = f.read()
         return json.loads(content)
     else:
