@@ -8,8 +8,6 @@ from TemplateHelper import TemplateArgs as TemplateArgs
 import os.path, imp, json
 # import sublime, sublime_plugin
 
-template_extension = '.tmp'
-template_dir = 'templates/RestResourse/'
 template_path = 'RestResourse/'
 apexrest = '/services/apexrest'
 defaultClassName = 'RestAPIClass'
@@ -24,24 +22,6 @@ templates = {
 	'pathParamParser': template_path + 'pathParamParser',
 	'retrieveGetParam': template_path + 'retrieveGetParam',
 	'retrievePathParam': template_path + 'retrievePathParam',
-}
-
-TEMPLATE_CONSTS = {
-	'basePath': '{{basePath}}',
-	'ResourseClassName': '{{ResourseClassName}}',
-	'methodCallers': '{{methodCallers}}',
-	'methodHandlers': '{{methodHandlers}}',
-	'pathParamParsers': '{{pathParamParsers}}',
-	'paramRetrievers': '{{paramRetrievers}}',
-	'paramName': '{{paramName}}',
-	'pathParamName': '{{pathParamName}}',
-	'method': '{{method}}',
-	'pathParamNumber': '{{pathParamNumber}}',
-	'definitionClasses': '{{definitionClasses}}',
-	'notdefinedClasses': '{{notdefinedClasses}}',
-	'_var': '{{',
-	'_code': '{${',
-	'_end': '}}'
 }
 
 def parseSchemaForPaths(schema_object):
@@ -158,4 +138,4 @@ def parseSchema(schema_object):
 
 	apex_code = class_template.compile()
 	# print('\n\n>>><<<\n\n')
-	print(apex_code)
+	return apex_code

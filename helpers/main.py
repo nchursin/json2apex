@@ -24,4 +24,4 @@ with open(read_from) as f:
 api_object = json.loads(content)
 
 # print(JSON2ApexLib.SampleConverter().generateFromSample(api_object))
-Swagger2ApexLib.parseSchema(api_object)
+print(Swagger2ApexLib.parseSchema(api_object))
