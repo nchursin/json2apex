@@ -3,29 +3,12 @@ import os
 import json
 import datetime
 import os.path, imp, json
+import re
 
 template_dir = 'templates/'
 template_extension = '.tmp'
 
 TEMPLATE_CONSTS = {
-	'basePath': '{{basePath}}',
-	'ResourseClassName': '{{ResourseClassName}}',
-	'methodCallers': '{{methodCallers}}',
-	'methodHandlers': '{{methodHandlers}}',
-	'pathParamParsers': '{{pathParamParsers}}',
-	'paramRetrievers': '{{paramRetrievers}}',
-	'paramName': '{{paramName}}',
-	'pathParamName': '{{pathParamName}}',
-	'method': '{{method}}',
-	'pathParamNumber': '{{pathParamNumber}}',
-	'definitionClasses': '{{definitionClasses}}',
-	'notdefinedClasses': '{{notdefinedClasses}}',
-	'access': '{{access}}',
-	'static': '{{static}}',
-	'returnType': '{{returnType}}',
-	'methodName': '{{methodName}}',
-	'methodArguments': '{{methodArguments}}',
-	'todo_comment': '{{todo_comment}}',
 	'_var': '{{',
 	'_code': '{${',
 	'_end': '}}',
@@ -87,7 +70,13 @@ class Template():
 		while code:
 			self.output = self.output.replace(code, self.compileCode(code))
 			code = self.findCodeOccurence()
-		for name, placeholder in TEMPLATE_CONSTS.items():
+		template_vars = {}
+		pattern = TEMPLATE_CONSTS['_var'] + '\w+' + TEMPLATE_CONSTS['_end']
+		template_var_occurences = re.findall(pattern, self.output)
+		for var_occ in template_var_occurences:
+			key = var_occ.replace(TEMPLATE_CONSTS['_var'], '').replace(TEMPLATE_CONSTS['_end'], '')
+			template_vars[key] = var_occ
+		for name, placeholder in template_vars.items():
 			if(debug):
 				print('name >> ', name)
 				print('placeholder >> ', placeholder)
