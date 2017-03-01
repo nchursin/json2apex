@@ -1,0 +1,14 @@
+{
+	"methods":{
+		"public": {
+			"HttpResponse": [
+				{
+					"name": "respond",
+					"arguments": {
+					    "request": "HttpRequest"
+					}
+				}
+			]
+		}
+	}
+}

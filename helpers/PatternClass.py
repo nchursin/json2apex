@@ -1,8 +1,23 @@
-import os
+import os, os.path
 import json
 from TemplateHelper import Template
 from TemplateHelper import TemplateArgs
 # import sublime, sublime_plugin
+
+def loadPattern(pattern_name):
+    pattern_ext = '.json'
+    pattern_dir = 'patterns/'
+    pattern_path = pattern_dir + pattern_name + pattern_ext
+    if os.path.isfile(pattern_path):
+        with open(pattern_path) as f:
+            content = f.read()
+        return json.loads(content)
+    else:
+        return None
+
+def loadInterfacePattern(interface_name):
+    interface_dir = 'interface/'
+    return loadPattern(interface_dir + interface_name)
 
 # {
 #   'extends': [],
@@ -39,23 +54,6 @@ from TemplateHelper import TemplateArgs
 #       }
 #   }
 # }
-
-interface_methods = {
-    'Comparable': {
-        'public': {
-            'Integer': [
-                {
-                    'name': 'compareTo',
-                    'static': False,
-                    'todo_comment': 'implement compare logic',
-                    'arguments': {
-                        'other': 'Object'
-                    }
-                }
-            ]
-        }
-    }
-}
 
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
@@ -98,12 +96,13 @@ class Pattern:
 
     def addInterface(self, interface_name):
         self.class_pattern['implements'].append(interface_name)
-        if interface_name in interface_methods:
-            for access_level in interface_methods[interface_name]:
-                for return_type in interface_methods[interface_name][access_level]:
+        interface_pattern = loadInterfacePattern(interface_name)
+        if interface_pattern != None:
+            for access_level in interface_pattern['methods']:
+                for return_type in interface_pattern['methods'][access_level]:
                     if return_type not in self.class_pattern['methods'][access_level]:
                         self.class_pattern['methods'][access_level][return_type] = []
-                    self.class_pattern['methods'][access_level][return_type] += interface_methods[interface_name][access_level][return_type]
+                    self.class_pattern['methods'][access_level][return_type] += interface_pattern['methods'][access_level][return_type]
 
     def addProperty(self, name, var_type, access, static):
         toAdd = []
@@ -190,15 +189,20 @@ class Pattern:
                         args.addVar('static', '')
                     args.addVar('methodName', method['name'])
                     arg_str = ''
-                    for arg_name, arg_type in method['arguments'].items():
-                        arg_str += arg_type + ' ' + arg_name + ', '
-                    if arg_str:
-                        arg_str = arg_str[:len(arg_str)-2]
+                    if 'arguments' in method:
+                        for arg_name, arg_type in method['arguments'].items():
+                            arg_str += arg_type + ' ' + arg_name + ', '
+                        if arg_str:
+                            arg_str = arg_str[:len(arg_str)-2]
                     args.addVar('methodArguments', arg_str)
                     if 'todo_comment' in method and method['todo_comment']:
                         args.addVar('todo_comment', method['todo_comment'])
                     else:
                         args.addVar('todo_comment', '')
+                    if 'comment' in method and method['comment']:
+                        args.addVar('comment', method['comment'])
+                    else:
+                        args.addVar('comment', '')
                     t = Template('other/Method')
                     t.addArgs(args)
                     method_code = t.compile()
