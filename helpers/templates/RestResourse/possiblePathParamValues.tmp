@@ -1,0 +1,1 @@
+private static final Set<String> PATH_{{pathParamNumber}}_PARAM_POSSIBLE_VALUES = new Set<String> { {{pathParamOptions}} };
