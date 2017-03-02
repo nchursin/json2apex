@@ -158,6 +158,7 @@ class Pattern:
         elif self.abstract:
             class_type = 'abstract'
         class_template.addVar('classType', class_type)
+        class_template.addVar('className', self.name)
         p = self.class_pattern
 
         if 'extends' not in p:
@@ -187,8 +188,6 @@ class Pattern:
 
     def genMethodCode(self, method_access, method_name, method_desc):
         t = Template('other/Method')
-        print('method_name >> ', method_name)
-        print('method_desc >> ', method_desc)
         t.addVar('access', method_access)
         t.addVar('methodName', method_name)
         if 'static' in method_desc:
