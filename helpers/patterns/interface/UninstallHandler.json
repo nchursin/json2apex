@@ -1,14 +1,13 @@
 {
 	"methods":{
 		"public": {
-			"void": [
-				{
-					"name": "onUninstall",
-					"arguments": {
-					    "context": "UninstallContext"
-					}
+			"onUninstall": 
+			{
+				"arguments": {
+				    "context": "UninstallContext"
 				}
-			]
+			}
+			
 		}
 	}
 }

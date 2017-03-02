@@ -1,14 +1,12 @@
 {
 	"methods":{
 		"public": {
-			"void": [
-				{
-					"name": "runApexClass",
-					"arguments": {
-					    "context": "System.SandboxContext"
-					}
+			"runApexClass": 
+			{
+				"arguments": {
+				    "context": "System.SandboxContext"
 				}
-			]
+			}
 		}
 	}
 }

@@ -1,15 +1,14 @@
 {
 	"methods":{
 		"public": {
-			"Integer": [
-				{
-					"name": "compareTo",
-					"todo_comment": "implement compare logic",
-					"arguments": {
-					    "other": "Object"
-					}
+			"compareTo": 
+			{
+				"returns": "Integer",
+				"todo_comment": "implement compare logic",
+				"arguments": {
+				    "other": "Object"
 				}
-			]
+			}
 		}
 	}
 }
