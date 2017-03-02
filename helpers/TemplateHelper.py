@@ -89,17 +89,21 @@ class Template():
 				self.output = self.output.replace(placeholder, '')
 		if(debug):
 			print('template >> ', self.output)
-		# self.output = '\n'.join(self.output.split('\n'))
 		output_splitted = self.output.split('\n')
 		self.output = ''
 		empty_prev = False
 		for part in output_splitted:
+			if(debug):
+				print('part >> ', part)
+				print("re.match(r'^\s*$', part) >> ", not not re.match(r'^\s*$', part))
+				print('empty_prev >> ', not not empty_prev)
 			if re.match(r'^\s*$', part) and empty_prev:
 				pass
 			else:
 				self.output += '\n' + part
 				empty_prev = re.match(r'^\s*$', part)
 		self.output = ' '.join(filter(lambda x: not re.match(r'^\s*$', x) , self.output.split(' ')))
+		self.output = self.output[1:]
 		return self.output
 
 
