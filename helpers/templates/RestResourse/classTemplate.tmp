@@ -3,15 +3,15 @@
 @RestResource(urlMapping='{{basePath}}/*')
 global with sharing class {{ResourseClassName}}  {
 
-    {{possiblePathParamValuesSets}}
-    // map to store all desired params. Filled in storeParams()
-    private static Map<String, Object> parameters = new Map<String, Object>();
-    // default URL without * in the end
-    private static String defaultUrlPattern {
-        get{
-            return RestContext.request.resourcePath.replace('*','');
-        }
-    }
+	{{possiblePathParamValuesSets}}
+	// map to store all desired params. Filled in storeParams()
+	private static Map<String, Object> parameters = new Map<String, Object>();
+	// default URL without * in the end
+	private static String defaultUrlPattern {
+		get{
+			return RestContext.request.resourcePath.replace('*','');
+		}
+	}
 
 {{methodCallers}}
 
@@ -23,173 +23,173 @@ global with sharing class {{ResourseClassName}}  {
 
 {{bodyParsers}}
 
-    // stores parameters for further processing
-    private static void storeParams(){
-        RestRequest req = RestContext.request;
-        String requestString = req.requestURI.substringAfter(defaultUrlPattern.replace('/services/apexrest',''));
-        if(requestString.contains('?')){
-            requestString = requestString.substringBefore('?');
-        }
+	// stores parameters for further processing
+	private static void storeParams(){
+		RestRequest req = RestContext.request;
+		String requestString = req.requestURI.substringAfter(defaultUrlPattern.replace('/services/apexrest',''));
+		if(requestString.contains('?')){
+			requestString = requestString.substringBefore('?');
+		}
 
 {{paramRetrievers}}
 
-        validate();
-    }
+		validate();
+	}
 
-    // validates everything in the request except for the body
-    private static void validate() {
-        Boolean valid = false;
+	// validates everything in the request except for the body
+	private static void validate() {
+		Boolean valid = false;
 
 {{urlValidators}}
 
-        // TODO: code validations here
+		// TODO: code validations here
 
-        if(!valid){
-            throw new APIException(400, message);
-        }
-    }
+		if(!valid){
+			throw new APIException(400, message);
+		}
+	}
 
-    // Swagger definitions parsed to classes
+	// Swagger definitions parsed to classes
 {{definitionClasses}}
-    
-    // Not predefined classes (not from defintions section)
+	
+	// Not predefined classes (not from defintions section)
 {{notdefinedClasses}}
 
-    // Templated only code
-    // exceptionList
-    private static List<RestException> exceptionList;
+	// Templated only code
+	// exceptionList
+	private static List<RestException> exceptionList;
 
-    // adds exception to exception list and creates an rest response
-    public static void handleException(Exception ex) {
-        System.debug('Exception >>> ' + ex.getMessage());
-        System.debug('Exception >>> ' + ex.getLineNumber());
-        System.debug('StackTrace >>> ' + ex.getStackTraceString());
-        if(null == exceptionList){
-            exceptionList = new List<RestException>();
-        }
-        exceptionList.add(new RestException(ex));
-        Integer code = ex instanceof APIException ? ((APIException)ex).statusCode : 500;
-        String body = JSON.serialize( exceptionList );
-        setupResponse(code, body);
-    }
+	// adds exception to exception list and creates an rest response
+	public static void handleException(Exception ex) {
+		System.debug('Exception >>> ' + ex.getMessage());
+		System.debug('Exception >>> ' + ex.getLineNumber());
+		System.debug('StackTrace >>> ' + ex.getStackTraceString());
+		if(null == exceptionList){
+			exceptionList = new List<RestException>();
+		}
+		exceptionList.add(new RestException(ex));
+		Integer code = ex instanceof APIException ? ((APIException)ex).statusCode : 500;
+		String body = JSON.serialize( exceptionList );
+		setupResponse(code, body);
+	}
 
-    // returns request params or throws error if there is no such param
-    public static String requireRequestParam(String paramName) {
-        RestRequest req = RestContext.request;
-        if(null == req.params.get(paramName)){
-            throw new APIException(400, paramName + ' parameter is required');
-        } else {
-            return req.params.get(paramName);
-        }
-    }
+	// returns request params or throws error if there is no such param
+	public static String requireRequestParam(String paramName) {
+		RestRequest req = RestContext.request;
+		if(null == req.params.get(paramName)){
+			throw new APIException(400, paramName + ' parameter is required');
+		} else {
+			return req.params.get(paramName);
+		}
+	}
 
-    // returns request param
-    public static String getOptionalRequestParam(String paramName){
-        RestRequest req = RestContext.request;
-        return req.params.get(paramName);
-    }
+	// returns request param
+	public static String getOptionalRequestParam(String paramName){
+		RestRequest req = RestContext.request;
+		return req.params.get(paramName);
+	}
 
-    // creates rest response from an object. Serializes it and puts in response Body
-    // Overload
-    public static void setupResponse(Integer code, Object bodyMap) {
-        String body = JSON.serialize(bodyMap, true);
-        setupResponse(code, body);
-    }
+	// creates rest response from an object. Serializes it and puts in response Body
+	// Overload
+	public static void setupResponse(Integer code, Object bodyMap) {
+		String body = JSON.serialize(bodyMap, true);
+		setupResponse(code, body);
+	}
 
-    // creates rest response from a string. Serializes it and puts in response Body
-    public static void setupResponse(Integer code, String body) {
-        RestResponse res = RestContext.response;
-        if(200 == code && (null != res.statusCode || 200 != res.statusCode)){
-            return;
-        }
-        res.addHeader('Content-Type', 'application/json');
-        res.statusCode = code;
-        res.responseBody = Blob.valueOf(body);
-    }
+	// creates rest response from a string. Serializes it and puts in response Body
+	public static void setupResponse(Integer code, String body) {
+		RestResponse res = RestContext.response;
+		if(200 == code && (null != res.statusCode || 200 != res.statusCode)){
+			return;
+		}
+		res.addHeader('Content-Type', 'application/json');
+		res.statusCode = code;
+		res.responseBody = Blob.valueOf(body);
+	}
 
-    // splits string by / and returns desired part
-    public static String getUrlPart(String requestString, Integer partName) {
-        String result;
-        if(null != requestString && null != partName){
-            List<String> pathList = requestString.split('/');
-            if(0 < partName){
-                result = (partName + 1) <= pathList.size() && String.isNotBlank(pathList[partName]) ? pathList[partName] : null;
-            } else {
-                result = !pathList.isEmpty() && !String.isBlank(pathList[0]) ? pathList[0] : null;
-            }
-        }
-        return result;
-    }
+	// splits string by / and returns desired part
+	public static String getUrlPart(String requestString, Integer partName) {
+		String result;
+		if(null != requestString && null != partName){
+			List<String> pathList = requestString.split('/');
+			if(0 < partName){
+				result = (partName + 1) <= pathList.size() && String.isNotBlank(pathList[partName]) ? pathList[partName] : null;
+			} else {
+				result = !pathList.isEmpty() && !String.isBlank(pathList[0]) ? pathList[0] : null;
+			}
+		}
+		return result;
+	}
 
-    // exception class to add to REST response
-    private class RestException extends Exception {
-        public String errorCode {
-            get{
-                if(null == this.errorCode){
-                    this.errorCode = this.getCause() instanceof APIException ? API_EXCEPTION : APEX_ERROR;
-                }
-                return this.errorCode;
-            }
-            set;
-        }
-        public String message {
-            get{
-                if(null == this.message){
-                    this.message = this.getCause().getMessage();
-                }
-                return this.message;
-            }
-            set;
-        }
-        //Swagger JSON
-        //"Error": {
-        //  "type": "object",
-        //  "required": [
-        //    "message",
-        //    "errorCode"
-        //  ],
-        //  "properties": {
-        //    "message": {
-        //      "type": "string"
-        //    },
-        //    "errorCode": {
-        //      "type": "string"
-        //    }
-        //  }
-        //}
+	// exception class to add to REST response
+	private class RestException extends Exception {
+		public String errorCode {
+			get{
+				if(null == this.errorCode){
+					this.errorCode = this.getCause() instanceof APIException ? API_EXCEPTION : APEX_ERROR;
+				}
+				return this.errorCode;
+			}
+			set;
+		}
+		public String message {
+			get{
+				if(null == this.message){
+					this.message = this.getCause().getMessage();
+				}
+				return this.message;
+			}
+			set;
+		}
+		//Swagger JSON
+		//"Error": {
+		//  "type": "object",
+		//  "required": [
+		//	"message",
+		//	"errorCode"
+		//  ],
+		//  "properties": {
+		//	"message": {
+		//	  "type": "string"
+		//	},
+		//	"errorCode": {
+		//	  "type": "string"
+		//	}
+		//  }
+		//}
 
-        //Swagger YAML
-        //  Error:
-        //    type: object
-        //    required:
-        //      - message
-        //      - errorCode
-        //    properties:
-        //      message:
-        //        type: string
-        //      errorCode:
-        //        type: string
-    }
+		//Swagger YAML
+		//  Error:
+		//	type: object
+		//	required:
+		//	  - message
+		//	  - errorCode
+		//	properties:
+		//	  message:
+		//		type: string
+		//	  errorCode:
+		//		type: string
+	}
 
-    // API specific exception
-    public class APIException extends Exception {
-        public Integer statusCode {
-            get{
-                if(null == this.statusCode){
-                    this.statusCode = 400;
-                }
-                return this.statusCode;
-            }
-            set;
-        }
-        public APIException (Integer statusCode, String message){
-            this(message);
-            this.statusCode = statusCode;
-        }
-        public String JSONFormat(){
-            Exception temp = (Exception)JSON.deserialize(JSON.serialize(this), Exception.class);
-            return JSON.serialize(temp);
-        }
-    }
+	// API specific exception
+	public class APIException extends Exception {
+		public Integer statusCode {
+			get{
+				if(null == this.statusCode){
+					this.statusCode = 400;
+				}
+				return this.statusCode;
+			}
+			set;
+		}
+		public APIException (Integer statusCode, String message){
+			this(message);
+			this.statusCode = statusCode;
+		}
+		public String JSONFormat(){
+			Exception temp = (Exception)JSON.deserialize(JSON.serialize(this), Exception.class);
+			return JSON.serialize(temp);
+		}
+	}
 
 }
