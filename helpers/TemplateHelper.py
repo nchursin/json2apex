@@ -99,6 +99,7 @@ class Template():
 			else:
 				self.output += '\n' + part
 				empty_prev = re.match(r'^\s*$', part)
+		self.output = ' '.join(filter(lambda x: not re.match(r'^\s*$', x) , self.output.split(' ')))
 		return self.output
 
 
