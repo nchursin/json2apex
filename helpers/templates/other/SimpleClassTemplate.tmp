@@ -1,0 +1,7 @@
+{{intends}}{{access}} {${'{{classType}}' if classType else ''}$} class {{className}}{${'' if not extends else ' extends {{extends}}'}$}{${'' if not implements else ' implements {{implements}}'}$} {
+
+{${'\n'.join([('	{{intends}}' + prop) for prop in properties])}$}
+
+	{{methods}}
+	
+{{intends}}}

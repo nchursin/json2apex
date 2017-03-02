@@ -1,11 +1,10 @@
 {
 	"methods":{
 		"public": {
-			"ID": [
-				{
-					"name": "getJobId"
-				}
-			]
+			"getJobId": 
+			{
+				"returns": "ID"
+			}
 		}
 	}
 }

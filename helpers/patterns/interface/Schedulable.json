@@ -1,14 +1,13 @@
 {
 	"methods":{
 		"public": {
-			"void": [
-				{
-					"name": "execute",
-					"arguments": {
-					    "context": "SchedulableContext"
-					}
+			"execute": 
+			{
+				"arguments": {
+				    "context": "SchedulableContext"
 				}
-			]
+			}
+			
 		}
 	}
 }
