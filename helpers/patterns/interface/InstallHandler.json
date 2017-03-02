@@ -1,14 +1,12 @@
 {
 	"methods":{
 		"public": {
-			"void": [
-				{
-					"name": "onInstall",
-					"arguments": {
-					    "context": "InstallContext"
-					}
+			"onInstall":
+			{
+				"arguments": {
+				    "context": "InstallContext"
 				}
-			]
+			}
 		}
 	}
 }

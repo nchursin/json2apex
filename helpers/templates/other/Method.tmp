@@ -1,5 +1,5 @@
 {${ '// {{comment}}' if comment else '' }$}
-{{access}} {{static}} {{returnType}} {{methodName}} ({{methodArguments}}){
+{{access}} {${'static' if static else ''}$} {{returnType}} {{methodName}} ({{methodArguments}}){
 	{${'' if 'void' == returnType else '{{returnType}} result;'}$}
 	{${'// TODO: {{todo_comment}}' if todo_comment else ''}$}
 	{${'' if 'void' == returnType else 'return result;'}$}

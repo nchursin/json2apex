@@ -1,11 +1,10 @@
 {
 	"methods":{
 		"public": {
-			"Id": [
-				{
-					"name": "getTriggerId"
-				}
-			]
+			"getTriggerId": 
+			{
+				"returns": "Id"
+			}
 		}
 	}
 }

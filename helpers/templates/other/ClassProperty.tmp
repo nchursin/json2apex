@@ -1,0 +1,1 @@
+{{access}} {${'static' if static else ''}$} {{valueType}} {{propName}}{${' { get; set; }' if createGetSet else ';'}$}

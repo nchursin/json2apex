@@ -20,39 +20,52 @@ def loadInterfacePattern(interface_name):
     return loadPattern(interface_dir + interface_name)
 
 # {
-#   'extends': [],
-#   'implements': [],
-#   'properties':
-#   {
-#       'public':
-#       {
-#           'static':{}
-#               'String':[]
-#           },
-#           'Boolean': []
-#       },
-#       'private':
-#       {
-#           'Integer': [],
-#           'Decimal': []
-#       }
-#   },
-#   'methods':
-#   {
-#       'public':
-#       {
-#          'void':
-#          [
-#              'name': 'methodName',
-#              'static': False,
-#              'arguments':
-#              {
-#                  'number': 'Integer',
-#                  'str': 'String'
-#              }
-#          ]
-#       }
-#   }
+#     "extends": [],
+#     "implements": [
+#         "Comparable",
+#         "Schedulable"
+#     ],
+#     "properties":
+#     {
+#         "public":
+#         {
+#             "someStaticVar": {
+#                 "type" : "Integer",
+#                 "static" : true
+#             },
+#             "someVar": {
+#                 "type" : "String"
+#             }
+#         },
+#         "private":
+#         {
+#             "somePrivateStaticVar": {
+#                 "type" : "Integer",
+#                 "static" : true
+#             },
+#             "somePrivateVar": {
+#                 "type" : "String"
+#             }
+#         }
+#     },
+#     "methods":
+#     {
+#         "public":
+#         {
+#             "void":
+#             [
+#                 {
+#                     "name": "methodName",
+#                     "static": false,
+#                     "arguments":
+#                     {
+#                         "number": "Integer",
+#                         "str": "String"
+#                     }
+#                 }
+#             ]
+#         }
+#     }
 # }
 
 def rreplace(s, old, new, occurrence):
@@ -67,7 +80,7 @@ class Pattern:
 
     generated_code = ''
 
-    def __init__(self, name, access='private', abstract=False):
+    def __init__(self, name, access='private', abstract=False, virtual=False):
         self.class_pattern = {
             'extends': [],
             'implements': [],
@@ -87,6 +100,13 @@ class Pattern:
         self.name = name
         self.access = access
         self.abstract = abstract
+        self.virtual = virtual
+
+    @classmethod
+    def fromSchema(cls, name, schema):
+        obj = cls(name, 'public')
+        obj.class_pattern = schema
+        return obj
 
     def toJson(self):
         return json.dumps(self.class_pattern)
@@ -96,40 +116,12 @@ class Pattern:
 
     def addInterface(self, interface_name):
         self.class_pattern['implements'].append(interface_name)
-        interface_pattern = loadInterfacePattern(interface_name)
-        if interface_pattern != None:
-            for access_level in interface_pattern['methods']:
-                for return_type in interface_pattern['methods'][access_level]:
-                    if return_type not in self.class_pattern['methods'][access_level]:
-                        self.class_pattern['methods'][access_level][return_type] = []
-                    self.class_pattern['methods'][access_level][return_type] += interface_pattern['methods'][access_level][return_type]
 
     def addProperty(self, name, var_type, access, static):
-        toAdd = []
-        isList = False
-        var_type_str = str(var_type)
-        if var_type_str.startswith('List<'):
-            toAdd = {
-                'type': var_type_str.replace('List<','').replace('>',''),
-                'properties': []
-            }
-            isList = True
-        if static :
-            if 'static' not in self.class_pattern['properties'][access]:
-                self.class_pattern['properties'][access]['static'] = {}
-
-            if var_type not in self.class_pattern['properties'][access]['static']:
-                self.class_pattern['properties'][access]['static'][var_type] = toAdd
-
-            if not isList:
-                self.class_pattern['properties'][access]['static'][var_type].append(name)
-            else:
-                self.class_pattern['properties'][access]['static'][var_type]['properties'].append(name)
-        else:
-            if var_type not in self.class_pattern['properties'][access]:
-                self.class_pattern['properties'][access][var_type] = []
-
-            self.class_pattern['properties'][access][var_type].append(name)
+        var_object = {}
+        var_object['type'] = var_type
+        var_object['static'] = static
+        self.class_pattern['properties'][access][name] = var_object
 
     def addDynamicProperty(self, name, var_type, access):
         self.addProperty(name, var_type, access, False)
@@ -149,88 +141,95 @@ class Pattern:
     def addPrivateStaticProperty(self, var_type, name):
         self.addStaticProperty(name, var_type, 'private')
 
-    def generateCode(self, tab):
-        if not tab:
-            tab = ''
-        c = '\n' + tab
-        if not self.access:
-            self.access = 'private'
-        c += self.access + ' '
-        if self.abstract:
-            c += 'abstract '
-        c += 'class ' + self.name
+    def loadInterfaces(self):
+        for interface_name in self.class_pattern['implements']:
+            interface_pattern = loadInterfacePattern(interface_name)
+            if interface_pattern != None:
+                for access_level, methods in interface_pattern['methods'].items():
+                    self.class_pattern['methods'][access_level].update(methods)
+
+    def generateCode(self, tab = ''):
+        class_template = Template('other/SimpleClassTemplate')
+        class_template.addVar('intends', tab)
+        class_template.addVar('access', self.access)
+        class_type = ''
+        if self.virtual:
+            class_type = 'virtual'
+        elif self.abstract:
+            class_type = 'abstract'
+        class_template.addVar('classType', class_type)
         p = self.class_pattern
 
-        if 'extends' in p and p['extends']:
-            c += ' extends '
-            for ext in p['extends']:
-                c += ext + ', '
-            c = c[:len(c)-2]
-        if 'implements' in p and p['implements']:
-            c += ' implements '
-            for impl in p['implements']:
-                c += impl + ', '
-            c = c[:len(c)-2]
+        if 'extends' not in p:
+            p['extends'] = []
+        if 'implements' not in p:
+            p['implements'] = []
+        class_template.addVar('extends', ', '.join(p['extends']))
+        class_template.addVar('implements', ', '.join(p['implements']))
+        self.loadInterfaces()
         
-        c += '\n' + tab +'{\n'
-        cur_tab = tab + '\t'
-        for prop_access,prop_name in p['properties'].items():
-            c += self.genPart(p['properties'][prop_access], cur_tab, prop_access)
+        prop_list = []
+        for prop_access,props in p['properties'].items():
+            for prop_name, prop_desc in props.items():
+                prop_def = self.genPropertyCode(prop_access, prop_name, prop_desc)
+                prop_list.append( prop_def )
         methods_code = []
-        for method_access, method_ret_types in p['methods'].items():
-            args = TemplateArgs()
-            args.addVar('access', method_access)
-            for ret_type, methods_list in method_ret_types.items():
-                args.addVar('returnType', ret_type)
-                for method in methods_list:
-                    if 'static' in method and method['static']:
-                        args.addVar('static', 'static')
-                    else:
-                        args.addVar('static', '')
-                    args.addVar('methodName', method['name'])
-                    arg_str = ''
-                    if 'arguments' in method:
-                        for arg_name, arg_type in method['arguments'].items():
-                            arg_str += arg_type + ' ' + arg_name + ', '
-                        if arg_str:
-                            arg_str = arg_str[:len(arg_str)-2]
-                    args.addVar('methodArguments', arg_str)
-                    if 'todo_comment' in method and method['todo_comment']:
-                        args.addVar('todo_comment', method['todo_comment'])
-                    else:
-                        args.addVar('todo_comment', '')
-                    if 'comment' in method and method['comment']:
-                        args.addVar('comment', method['comment'])
-                    else:
-                        args.addVar('comment', '')
-                    t = Template('other/Method')
-                    t.addArgs(args)
-                    method_code = t.compile()
-                    method_code = tab + '\t' + method_code.replace('\n', '\n\t' + tab)
-                    methods_code.append(method_code)
-        c += '\n'
-        c += '\n'.join(methods_code)
-        c += '\n' + tab + '}\n'
-        return c
+        for method_access, methods in p['methods'].items():
+            for method_name, method_desc in methods.items():
+                method_code = self.genMethodCode(method_access, method_name, method_desc)
+                method_code = tab + '\t' + method_code.replace('\n', '\n\t' + tab)
+                methods_code.append(method_code)
+        class_template.addVar('properties', prop_list)
+        class_template.addVar('methods', '\n'.join(methods_code))
+        result = class_template.compile()
+        del class_template
+        return result
 
-    def genPart(self, prop_list, tab, access):
-        c = '';
-        line_end = ' { get; set; } \n'
-        for prop_type, props in prop_list.items():
-            if dict == type(props):
-                if not str(prop_type).startswith('List<'):
-                    prop_keyword = prop_type
-                    for prop_type_certain, prop_with_keyword in props.items():
-                        d += tab + access + ' ' + prop_keyword + ' ' + prop_type_certain + ' '
-                        for prop in prop_with_keyword:
-                            c += prop + line_end
-                    c += '\n'
-                else:
-                    for prop_name in props['properties']:
-                        d = tab + access + ' ' + prop_type + ' ' + prop_name + line_end
-                        c += d
-            else:
-                for prop_name in props:
-                    d = tab + access + ' ' + prop_type + ' ' + prop_name + line_end
-                    c += d
-        return c
+    def genMethodCode(self, method_access, method_name, method_desc):
+        t = Template('other/Method')
+        print('method_name >> ', method_name)
+        print('method_desc >> ', method_desc)
+        t.addVar('access', method_access)
+        t.addVar('methodName', method_name)
+        if 'static' in method_desc:
+            t.addVar('static', method_desc['static'])
+        else:
+            t.addVar('static', False)
+
+        if 'returns' in method_desc:
+            t.addVar('returnType', method_desc['returns'])
+        else:
+            t.addVar('returnType', 'void')
+
+        arg_str = ''
+        if 'arguments' in method_desc:
+            for arg_name, arg_type in method_desc['arguments'].items():
+                arg_str += arg_type + ' ' + arg_name + ', '
+            if arg_str:
+                arg_str = arg_str[:len(arg_str)-2]
+        t.addVar('methodArguments', arg_str)
+
+        if 'comment' in method_desc:
+            t.addVar('comment', method_desc['comment'])
+        else:
+            t.addVar('comment', '')
+
+        if 'todo_comment' in method_desc:
+            t.addVar('todo_comment', method_desc['todo_comment'])
+        else:
+            t.addVar('todo_comment', '')
+
+        result = t.compile()
+        del t
+        return result
+
+    def genPropertyCode(self, access, prop_name, prop_desc):
+        t = Template('other/ClassProperty')
+        t.addVar('createGetSet', True)
+        t.addVar('access', access)
+        t.addVar('propName', prop_name)
+        if 'static' not in prop_desc:
+            prop_desc['static'] = False
+        t.addVar('static', prop_desc['static'])
+        t.addVar('valueType', prop_desc['type'])
+        return t.compile()

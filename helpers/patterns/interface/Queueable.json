@@ -1,14 +1,12 @@
 {
 	"methods":{
 		"public": {
-			"void": [
-				{
-					"name": "execute",
-					"arguments": {
-					    "context": "QueueableContext"
-					}
+			"execute":
+			{
+				"arguments": {
+				    "context": "QueueableContext"
 				}
-			]
+			}
 		}
 	}
 }
