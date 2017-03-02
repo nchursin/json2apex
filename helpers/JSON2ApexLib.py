@@ -102,7 +102,7 @@ class SampleConverter:
 		first_result = self.generatePatternFromSample(root_object, 'Root_object')
 		dics = first_result['dics']
 		root_pattern['Root_object'] = first_result['pattern'].class_pattern
-		classDfn += first_result['pattern'].generateCode('\t')
+		classDfn += first_result['pattern'].generateCode('\t') + '\n'
 		while 0 != len(dics.keys()):
 			key, value = dics.popitem()
 			className = key.capitalize() + 'Class'
