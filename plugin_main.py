@@ -1,25 +1,18 @@
-import sys, os.path, imp, sublime, sublime_plugin, json
+import sys, os.path, imp, json
+import sublime, sublime_plugin
+from sys import modules
+from imp import reload
 
-BASE_PATH = os.path.abspath(os.path.dirname(__file__))
-CODE_DIRS = [
+BASE_PATH = os.path.abspath(os.path.dirname(__file__)).split('/')[-1]
+INNER_CODE_DIRS = [
   'helpers',
 ]
-sys.path += [BASE_PATH] + [os.path.join(BASE_PATH, f) for f in CODE_DIRS]
+EXT_PLUGIN_DIRS = []
+MODULE_DIRS = list(map(lambda el: BASE_PATH + '/' + el, INNER_CODE_DIRS))
+MODULE_DIRS += EXT_PLUGIN_DIRS
 
-# =======
-# reload plugin files on change
-# if 'helpers.reloader' in sys.modules:
-# 	imp.reload(sys.modules['helpers.reloader'])
-if 'helpers.JSON2ApexLib' in sys.modules:
-	imp.reload(sys.modules['helpers.JSON2ApexLib'])
-if 'helpers.PatternClass' in sys.modules:
-	imp.reload(sys.modules['helpers.PatternClass'])
-# import helpers.reloader
-import helpers.JSON2ApexLib as JSON2ApexLib
-import helpers.PatternClass as PatternClass
-# print(PatternClass)
-
-# TODO: Make another command to launch class renaming. And one more for actual class renaming. Then fire them recursively
+from helpers import module_loader
+module_loader.load ( MODULE_DIRS, globals() )
 
 class JsonToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
