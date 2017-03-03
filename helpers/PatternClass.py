@@ -1,7 +1,7 @@
 import os, os.path
 import json
-from TemplateHelper import Template
-from TemplateHelper import TemplateArgs
+from json2Apex.helpers.TemplateHelper import Template
+from json2Apex.helpers.TemplateHelper import TemplateArgs
 # import sublime, sublime_plugin
 
 pattern_ext = '.json'
