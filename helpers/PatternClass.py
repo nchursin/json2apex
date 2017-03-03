@@ -172,16 +172,18 @@ class Pattern:
         self.loadInterfaces()
         
         prop_list = []
-        for prop_access,props in p['properties'].items():
-            for prop_name, prop_desc in props.items():
-                prop_def = self.genPropertyCode(prop_access, prop_name, prop_desc)
-                prop_list.append( prop_def )
+        if 'properties' in p:
+            for prop_access,props in p['properties'].items():
+                for prop_name, prop_desc in props.items():
+                    prop_def = self.genPropertyCode(prop_access, prop_name, prop_desc)
+                    prop_list.append( prop_def )
         methods_code = []
-        for method_access, methods in p['methods'].items():
-            for method_name, method_desc in methods.items():
-                method_code = self.genMethodCode(method_access, method_name, method_desc)
-                method_code = tab + '\t' + method_code.replace('\n', '\n\t' + tab)
-                methods_code.append(method_code)
+        if 'methods' in p:
+            for method_access, methods in p['methods'].items():
+                for method_name, method_desc in methods.items():
+                    method_code = self.genMethodCode(method_access, method_name, method_desc)
+                    method_code = tab + '\t' + method_code.replace('\n', '\n\t' + tab)
+                    methods_code.append(method_code)
         class_template.addVar('properties', prop_list)
         class_template.addVar('methods', '\n'.join(methods_code))
         result = class_template.compile()
