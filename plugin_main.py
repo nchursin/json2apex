@@ -47,7 +47,7 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 		self.classList = ["PatternClass"]
 		self.apexClassView = sublime.active_window().new_file()
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
-		self.apexClassView.insert(edit, 0, "\n" + gen)
+		self.apexClassView.insert(edit, 0, gen)
 
 		self.renameClass()
 
@@ -85,7 +85,7 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 		print(self.classList)
 		self.apexClassView = sublime.active_window().new_file()
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
-		self.apexClassView.insert(edit, 0, "\n" + gen)
+		self.apexClassView.insert(edit, 0, gen)
 
 		# self.apexClassView.sel().clear()
 		# s = self.classList[2]
