@@ -1,0 +1,34 @@
+{
+	"methods":{
+		"public": {
+			"getCustomMetadataType": 
+			{
+				"returns": "String"
+			},
+			"getUserInfo": 
+			{
+				"returns": "Auth.UserData",
+				"arguments": {
+				    "authProviderConfiguration": "Map<String,String>",
+				    "response": "Auth.AuthProviderTokenResponse"
+				}
+			},
+			"handleCallback":
+			{
+				"returns": "Auth.AuthProviderTokenResponse",
+				"arguments": {
+				    "authProviderConfiguration": "Map<String,String>",
+				    "callbackState": "Auth.AuthProviderCallbackState"
+				}
+			},
+			"initiate":
+			{
+				"returns": "System.PageReference",
+				"arguments": {
+				    "authProviderConfiguration": "Map<String,String>",
+				    "stateToPropagate": "String"
+				}
+			}
+		}
+	}
+}
