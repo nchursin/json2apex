@@ -23,7 +23,7 @@ def load ( moduleDirectories, pluginGlobals ):
 			break
 
 	for directory in moduleDirectories:
-		modulePaths[directory.replace('json2apex/','')] = packagesPath + os.sep + directory 
+		modulePaths[directory.replace('json2Apex/','')] = packagesPath + os.sep + directory 
 
 	for index in range ( 0, 2 ): #▒▒▒  loads modules twice to ensure dependencies are updated  ▒▒▒#
 		for dir_name, path in modulePaths.items():
