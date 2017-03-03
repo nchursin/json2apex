@@ -15,9 +15,11 @@ Since I haven't published it to Package Control yet, in order to use you have to
 5. Press Enter
 6. You will see generated Apex code. Also a text input appears in the bottom of the buffer. Use this input to change generated class names quickly.
 
+To generate class from JSON schema use `JSON2Apex: Convert JSON schema to Apex` command.
+Sample schema can be found [here](https://github.com/nchursin/json2apex/blob/master/schema_sample.json, "Schema Sample")
+
 ###Nearest future
 Swagger JSON to Apex REST Definition generation
-Add generation from JSON schema
 
 ###Other plans
 Add XML convertion

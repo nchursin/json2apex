@@ -1,0 +1,20 @@
+{
+	"automatic_order": false,
+	"ignore_files":
+	[
+		"helpers/main.py",
+		"helpers/__init__.py",
+		"helpers/module_loader.py",
+		"module_loader/loader.py",
+		"module_loader/__init__.py"
+	],
+	"iterations": 1,
+	"mods_load_order":
+	[
+		"helpers/TemplateHelper.py",
+		"helpers/PatternClass.py",
+		"helpers/JSON2ApexLib.py",
+		"helpers/Swagger2ApexLib.py",
+		"plugin_main.py"
+	]
+}

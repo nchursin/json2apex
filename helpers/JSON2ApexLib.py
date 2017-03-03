@@ -2,8 +2,8 @@ import sys
 import os
 import json
 import datetime
-from PatternClass import Pattern as Pattern
 import os.path, imp, sublime, sublime_plugin, json
+from json2Apex.helpers.PatternClass import Pattern as Pattern
 
 types = {
 	float: 'Double',

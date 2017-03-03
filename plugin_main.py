@@ -1,25 +1,63 @@
-import sys, os.path, imp, sublime, sublime_plugin, json
+import sys, os.path, imp, json
+import sublime, sublime_plugin
+from sys import modules
+from imp import reload
 
-BASE_PATH = os.path.abspath(os.path.dirname(__file__))
-CODE_DIRS = [
-  'helpers',
-]
-sys.path += [BASE_PATH] + [os.path.join(BASE_PATH, f) for f in CODE_DIRS]
+# BASE_PATH = os.path.abspath(os.path.dirname(__file__)).split('/')[-1]
+# INNER_CODE_DIRS = [
+#   'helpers',
+# ]
 
-# =======
-# reload plugin files on change
-# if 'helpers.reloader' in sys.modules:
-# 	imp.reload(sys.modules['helpers.reloader'])
-if 'helpers.JSON2ApexLib' in sys.modules:
-	imp.reload(sys.modules['helpers.JSON2ApexLib'])
-if 'helpers.PatternClass' in sys.modules:
-	imp.reload(sys.modules['helpers.PatternClass'])
-# import helpers.reloader
-import helpers.JSON2ApexLib as JSON2ApexLib
-import helpers.PatternClass as PatternClass
-# print(PatternClass)
+# EXT_PLUGIN_DIRS = []
+# MODULE_DIRS = list(map(lambda el: BASE_PATH + '/' + el, INNER_CODE_DIRS))
+# MODULE_DIRS += EXT_PLUGIN_DIRS
 
-# TODO: Make another command to launch class renaming. And one more for actual class renaming. Then fire them recursively
+# globals_var = globals()
+
+# loader_path = os.path.abspath(os.path.dirname(__file__)) + '/module_loader/'
+
+# fileObject, file, description = imp.find_module( 'loader', [ loader_path ] )
+# globals_var[ 'loader' ] = imp.load_module ( 'loader', fileObject, file, description )
+
+# loader.load ( MODULE_DIRS, globals() )
+
+class SchemaToApexCommand(sublime_plugin.TextCommand):
+	apexClassView = {}
+	classList = []
+	
+	def run(self, edit):
+		api_object = self.getContent()
+		if(api_object is not None):
+			print(' dwdxs')
+			self.generateCode(edit, api_object)
+
+	def getContent(self):
+		try:
+			contents = self.view.substr(sublime.Region(0, self.view.size()))
+			api_object = json.loads(contents)
+			return api_object
+		except ValueError:
+			sublime.error_message('Invalid JSON')
+			return None
+
+	def generateCode(self, edit, api_object):
+		pattern = PatternClass.Pattern.fromSchema('PatternClass', api_object)
+		gen = pattern.generateCode()
+		del(pattern)
+		self.classList = ["PatternClass"]
+		self.apexClassView = sublime.active_window().new_file()
+		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
+		self.apexClassView.insert(edit, 0, "\n" + gen)
+
+		self.renameClass()
+
+	def renameClass(self):
+		args = {
+			'classList': self.classList
+		}
+		print(args)
+		edit = self.apexClassView.begin_edit(0, '')
+		self.apexClassView.run_command('launch_class_renaming', args)
 
 class JsonToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}

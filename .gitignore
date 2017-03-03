@@ -1,4 +1,9 @@
 __pycache__/
+.DS_Store
 example_*
 *.pyc
 package-metadata.json
+
+
+# temporary here until develop own reloader
+module_loader
