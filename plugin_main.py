@@ -3,23 +3,23 @@ import sublime, sublime_plugin
 from sys import modules
 from imp import reload
 
-# BASE_PATH = os.path.abspath(os.path.dirname(__file__)).split('/')[-1]
-# INNER_CODE_DIRS = [
-#   'helpers',
-# ]
+BASE_PATH = os.path.abspath(os.path.dirname(__file__)).split('/')[-1]
+INNER_CODE_DIRS = [
+  'helpers',
+]
 
-# EXT_PLUGIN_DIRS = []
-# MODULE_DIRS = list(map(lambda el: BASE_PATH + '/' + el, INNER_CODE_DIRS))
-# MODULE_DIRS += EXT_PLUGIN_DIRS
+EXT_PLUGIN_DIRS = []
+MODULE_DIRS = list(map(lambda el: BASE_PATH + '/' + el, INNER_CODE_DIRS))
+MODULE_DIRS += EXT_PLUGIN_DIRS
 
-# globals_var = globals()
+globals_var = globals()
 
-# loader_path = os.path.abspath(os.path.dirname(__file__)) + '/module_loader/'
+loader_path = os.path.abspath(os.path.dirname(__file__)) + '/module_loader/'
 
-# fileObject, file, description = imp.find_module( 'loader', [ loader_path ] )
-# globals_var[ 'loader' ] = imp.load_module ( 'loader', fileObject, file, description )
+fileObject, file, description = imp.find_module( 'loader', [ loader_path ] )
+globals_var[ 'loader' ] = imp.load_module ( 'loader', fileObject, file, description )
 
-# loader.load ( MODULE_DIRS, globals() )
+loader.load ( MODULE_DIRS, globals() )
 
 class SchemaToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
