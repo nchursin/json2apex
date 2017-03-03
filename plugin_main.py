@@ -14,6 +14,44 @@ MODULE_DIRS += EXT_PLUGIN_DIRS
 from helpers import module_loader
 module_loader.load ( MODULE_DIRS, globals() )
 
+class SchemaToApexCommand(sublime_plugin.TextCommand):
+	apexClassView = {}
+	classList = []
+	
+	def run(self, edit):
+		api_object = self.getContent()
+		if(api_object is not None):
+			print(' dwdxs')
+			self.generateCode(edit, api_object)
+
+	def getContent(self):
+		try:
+			contents = self.view.substr(sublime.Region(0, self.view.size()))
+			api_object = json.loads(contents)
+			return api_object
+		except ValueError:
+			sublime.error_message('Invalid JSON')
+			return None
+
+	def generateCode(self, edit, api_object):
+		pattern = PatternClass.Pattern.fromSchema('PatternClass', api_object)
+		gen = pattern.generateCode()
+		del(pattern)
+		self.classList = ["PatternClass"]
+		self.apexClassView = sublime.active_window().new_file()
+		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
+		self.apexClassView.insert(edit, 0, "\n" + gen)
+
+		self.renameClass()
+
+	def renameClass(self):
+		args = {
+			'classList': self.classList
+		}
+		print(args)
+		edit = self.apexClassView.begin_edit(0, '')
+		self.apexClassView.run_command('launch_class_renaming', args)
+
 class JsonToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
 	classList = []

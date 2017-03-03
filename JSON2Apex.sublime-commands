@@ -1,3 +1,4 @@
 [
-	{ "caption": "JSON2Apex: Convert sample to Apex", "command": "json_to_apex" }
+	{ "caption": "JSON2Apex: Convert sample to Apex", "command": "json_to_apex" },
+	{ "caption": "JSON2Apex: Convert JSON Schema to Apex", "command": "schema_to_apex" }
 ]

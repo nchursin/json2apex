@@ -4,15 +4,17 @@ from TemplateHelper import Template
 from TemplateHelper import TemplateArgs
 # import sublime, sublime_plugin
 
+pattern_ext = '.json'
+pattern_dir = os.path.abspath(os.path.dirname(__file__)) + '/patterns/'
+
 def loadPattern(pattern_name):
-    pattern_ext = '.json'
-    pattern_dir = 'patterns/'
     pattern_path = pattern_dir + pattern_name + pattern_ext
     if os.path.isfile(pattern_path):
         with open(pattern_path) as f:
             content = f.read()
         return json.loads(content)
     else:
+        print('No pattern for interface ' + pattern_name + ' found!')
         return None
 
 def loadInterfacePattern(interface_name):

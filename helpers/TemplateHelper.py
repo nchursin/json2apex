@@ -5,7 +5,7 @@ import datetime
 import os.path, imp, json
 import re
 
-template_dir = 'templates/'
+template_dir = os.path.abspath(os.path.dirname(__file__)) + '/templates/'
 template_extension = '.tmp'
 
 TEMPLATE_CONSTS = {
