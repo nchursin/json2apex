@@ -34,20 +34,20 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 	def getContent(self):
 		try:
 			contents = self.view.substr(sublime.Region(0, self.view.size()))
-			api_object = json.loads(contents)
-			return api_object
+			# api_object = json.loads(contents)
+			return contents
 		except ValueError:
 			sublime.error_message('Invalid JSON')
 			return None
 
 	def generateCode(self, edit, api_object):
-		pattern = PatternClass.Pattern.fromSchema('PatternClass', api_object)
+		pattern = PatternClass.Pattern.fromString('PatternClass', api_object)
 		gen = pattern.generateCode()
 		del(pattern)
 		self.classList = ["PatternClass"]
 		self.apexClassView = sublime.active_window().new_file()
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
-		self.apexClassView.insert(edit, 0, "\n" + gen)
+		self.apexClassView.insert(edit, 0, gen)
 
 		self.renameClass()
 
@@ -85,7 +85,7 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 		print(self.classList)
 		self.apexClassView = sublime.active_window().new_file()
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
-		self.apexClassView.insert(edit, 0, "\n" + gen)
+		self.apexClassView.insert(edit, 0, gen)
 
 		# self.apexClassView.sel().clear()
 		# s = self.classList[2]

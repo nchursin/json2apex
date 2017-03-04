@@ -1,5 +1,6 @@
 import os, os.path
 import json
+import collections
 from json2Apex.helpers.TemplateHelper import Template
 from json2Apex.helpers.TemplateHelper import TemplateArgs
 # import sublime, sublime_plugin
@@ -25,7 +26,8 @@ def loadInterfacePattern(interface_name):
 #     "extends": [],
 #     "implements": [
 #         "Comparable",
-#         "Schedulable"
+#         "Schedulable",
+#         "Auth.AuthProviderPlugin"
 #     ],
 #     "properties":
 #     {
@@ -54,20 +56,21 @@ def loadInterfacePattern(interface_name):
 #     {
 #         "public":
 #         {
-#             "void":
-#             [
+#             "methodName":
+#             {
+#                 "static": false,
+#                 "todo_comment": "this will be inside the method with TODO mark",
+#                 "comment": "this will be on top of method to describe what it does",
+#                 "returns": "void",
+#                 "arguments":
 #                 {
-#                     "name": "methodName",
-#                     "static": false,
-#                     "arguments":
-#                     {
-#                         "number": "Integer",
-#                         "str": "String"
-#                     }
+#                     "number": "Integer",
+#                     "str": "String"
 #                 }
-#             ]
+#             }
 #         }
 #     }
+#     'method_order': []
 # }
 
 def rreplace(s, old, new, occurrence):
@@ -82,6 +85,7 @@ class Pattern:
 
     generated_code = ''
 
+
     def __init__(self, name, access='private', abstract=False, virtual=False):
         self.class_pattern = {
             'extends': [],
@@ -93,7 +97,8 @@ class Pattern:
             'methods': {
                 'public': {},
                 'private': {}
-            }
+            },
+            'method_order': []
         }
         name_str = str(name)
         if name_str.startswith('List<'):
@@ -108,6 +113,13 @@ class Pattern:
     def fromSchema(cls, name, schema):
         obj = cls(name, 'public')
         obj.class_pattern = schema
+        return obj
+
+    @classmethod
+    def fromString(cls, name, schema_str):
+        decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
+        obj = cls(name, 'public')
+        obj.class_pattern = decoder.decode(schema_str)
         return obj
 
     def toJson(self):
@@ -161,6 +173,7 @@ class Pattern:
             class_type = 'abstract'
         class_template.addVar('classType', class_type)
         class_template.addVar('className', self.name)
+        self.formMethodOrder()
         p = self.class_pattern
 
         if 'extends' not in p:
@@ -187,6 +200,10 @@ class Pattern:
         result = class_template.compile()
         del class_template
         return result
+
+    def formMethodOrder(self):
+        p = self.class_pattern
+        
 
     def genMethodCode(self, method_access, method_name, method_desc):
         t = Template('other/Method')
