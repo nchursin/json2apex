@@ -16,8 +16,6 @@ globals_var = globals()
 
 loader_path = os.path.abspath(os.path.dirname(__file__)) + os.sep + 'module_loader' + os.sep
 
-print('loader_path >> ', loader_path)
-
 fileObject, file, description = imp.find_module( 'loader', [ loader_path ] )
 globals_var[ 'loader' ] = imp.load_module ( 'loader', fileObject, file, description )
 
