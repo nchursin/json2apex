@@ -3,3 +3,4 @@ __pycache__/
 example_*
 *.pyc
 package-metadata.json
+run_tests.sh
