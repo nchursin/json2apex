@@ -1,5 +1,3 @@
-#Not working. Fix in development
-
 #JSON2Apex 
 ####A Sublime Text 3 plugin to generate Salesforce Apex classes from JSON samples.
 
@@ -21,7 +19,7 @@ Clone this repo to `your_sublime_dir/Packages/`. Restart Sublime if needed.
 ###Generate class from JSON schema
 Sample schema can be found [here](https://github.com/nchursin/json2apex/blob/master/schema_sample.json "Schema Sample")
 
-1. Create a schema. 
+1. Create a schema.
 2. Use `JSON2Apex: Convert JSON schema to Apex` command. (`Ctrl+Shit+P` (or `⌘+Shift+P` on Mac) to find it)
 3. Rename the class either manually or using a text input in the bottom of the buffer.
 
