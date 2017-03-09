@@ -1,5 +1,3 @@
-#Not working. Fix in development
-
 #JSON2Apex 
 ####A Sublime Text 3 plugin to generate Salesforce Apex classes from JSON samples.
 
