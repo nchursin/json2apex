@@ -27,7 +27,11 @@ def load ( moduleDirectories, pluginGlobals ):
 	package_name = os.path.relpath(package_name, sublime.packages_path()).split(os.sep, 1)[0]
 
 	for directory in moduleDirectories:
-		modulePaths[directory.replace(package_name + os.sep,'')] = packagesPath + os.sep + directory 
+		if packagesPath not in directory:
+			modulePaths[directory.replace(package_name + os.sep,'')] = packagesPath + os.sep + directory 
+		else:
+			modulePaths[directory.replace(packagesPath + os.sep,'')] = directory 
+
 
 	for index in range ( 0, 2 ): #▒▒▒  loads modules twice to ensure dependencies are updated  ▒▒▒#
 		for dir_name, path in modulePaths.items():

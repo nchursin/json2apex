@@ -9,12 +9,14 @@ INNER_CODE_DIRS = [
 ]
 
 EXT_PLUGIN_DIRS = []
-MODULE_DIRS = list(map(lambda el: BASE_PATH + '/' + el, INNER_CODE_DIRS))
+MODULE_DIRS = list(map(lambda el: BASE_PATH + os.sep + el, INNER_CODE_DIRS))
 MODULE_DIRS += EXT_PLUGIN_DIRS
 
 globals_var = globals()
 
-loader_path = os.path.abspath(os.path.dirname(__file__)) + '/module_loader/'
+loader_path = os.path.abspath(os.path.dirname(__file__)) + os.sep + 'module_loader' + os.sep
+
+print('loader_path >> ', loader_path)
 
 fileObject, file, description = imp.find_module( 'loader', [ loader_path ] )
 globals_var[ 'loader' ] = imp.load_module ( 'loader', fileObject, file, description )
