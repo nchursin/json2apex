@@ -15,6 +15,9 @@ TEMPLATE_CONSTS = {
 	'_code_end': '}$}'
 }
 
+def __init__():
+    pass
+
 # template_args = {
 # 	template_vars:{
 # 		name: value
