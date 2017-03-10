@@ -2,9 +2,9 @@ import sys
 import os
 import json
 import datetime
-from json2Apex.helpers.PatternClass import Pattern as Pattern
-from json2Apex.helpers.TemplateHelper import Template as Template
-from json2Apex.helpers.TemplateHelper import TemplateArgs as TemplateArgs
+from PatternClass import Pattern as Pattern
+from TemplateHelper import Template as Template
+from TemplateHelper import TemplateArgs as TemplateArgs
 import os.path, imp, json
 # import sublime, sublime_plugin
 
