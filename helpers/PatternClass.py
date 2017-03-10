@@ -1,9 +1,13 @@
 import os, os.path
 import json
 import collections
-from json2Apex.helpers.TemplateHelper import Template
-from json2Apex.helpers.TemplateHelper import TemplateArgs
+from TemplateHelper import Template
+from TemplateHelper import TemplateArgs
 # import sublime, sublime_plugin
+
+
+def __init__():
+    pass
 
 pattern_ext = '.json'
 pattern_dir = os.path.abspath(os.path.dirname(__file__)) + '/patterns/'
