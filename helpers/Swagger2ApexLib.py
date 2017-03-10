@@ -8,7 +8,8 @@ from TemplateHelper import TemplateArgs as TemplateArgs
 import os.path, imp, json
 # import sublime, sublime_plugin
 
-template_path = 'RestResourse/'
+restresource_template_path = 'RestResourse/'
+other_templates_path = 'other/'
 apexrest = '/services/apexrest'
 defaultClassName = 'RestAPIClass'
 slash = '/'
@@ -16,12 +17,14 @@ definitions_const = '#/definitions/'
 inner_classes_access = 'private'
 
 templates = {
-	'classTemplate': template_path + 'classTemplate',
-	'methodCaller': template_path + 'methodCaller',
-	'methodHandler': template_path + 'methodHandler',
-	'pathParamParser': template_path + 'pathParamParser',
-	'retrieveGetParam': template_path + 'retrieveGetParam',
-	'retrievePathParam': template_path + 'retrievePathParam',
+	'classTemplate': restresource_template_path + 'classTemplate',
+	'methodCaller': restresource_template_path + 'methodCaller',
+	'methodHandler': restresource_template_path + 'methodHandler',
+	'pathParamParser': restresource_template_path + 'pathParamParser',
+	'retrieveGetParam': restresource_template_path + 'retrieveGetParam',
+	'retrievePathParam': restresource_template_path + 'retrievePathParam',
+	'urlValidator': restresource_template_path + 'urlValidator',
+	'OptionSet': other_templates_path + 'SetConstDefinition',
 }
 
 def parseSchemaForPaths(schema_object):
@@ -29,6 +32,7 @@ def parseSchemaForPaths(schema_object):
 	processed_paths = []
 	parsers = []
 	retrievers = []
+	path_options = {}
 	for p, path_def in paths.items():
 		path = p
 		if slash == path[0]:
@@ -41,6 +45,10 @@ def parseSchemaForPaths(schema_object):
 					var_name = part.replace('{','').replace('}','')
 				else:
 					var_name = 'Part' + str(i)
+					if var_name not in path_options:
+						path_options[var_name] = []
+					if part not in path_options[var_name]:
+						path_options[var_name].append(part)
 					# required = False
 					# for param in path_def['parameters']:
 					# 	if var_name == param['name']:
@@ -58,8 +66,29 @@ def parseSchemaForPaths(schema_object):
 					parsers.append( paramParserTemplate.compile() )
 					retrievers.append( retrievePathParamTemplate.compile() )
 				i += 1
-	return parsers, retrievers
-					
+	return parsers, retrievers, path_options
+
+def createPathValidatorsFromOptions(path_options):
+	set_name_template = '{replace}_OPTIONS'
+	access = 'private'
+	object_type = 'String'
+	sets = []
+	validators = []
+	for var_name in path_options:
+		path_options[var_name] = list(map(lambda el: "'" + el + "'", path_options[var_name]))
+		set_name = set_name_template.replace('{replace}', var_name)
+		set_template = Template(templates['OptionSet'])
+		set_template.addVar('access', access)
+		set_template.addVar('objectType', object_type)
+		set_template.addVar('setName', set_name)
+		set_template.addVar('setValues', path_options[var_name])
+		validator_template = Template(templates['urlValidator'])
+		validator_template.addVar('set_name', set_name)
+		validator_template.addVar('var_name', var_name)
+		sets.append('\t' + set_template.compile())
+		validators.append(validator_template.compile())
+	return sets, validators
+
 def parseSchemaForMethods(schema_object):
 	paths = schema_object['paths']
 	processed_paths = []
@@ -126,10 +155,13 @@ def parseSchema(schema_object):
 	class_template = Template(templates['classTemplate'])
 	class_template.addVar('basePath', base_path)
 	class_template.addVar('ResourseClassName', defaultClassName)
-	parsers, retrievers = parseSchemaForPaths(schema_object)
+	parsers, retrievers, path_options = parseSchemaForPaths(schema_object)
+	sets, urlValidators = createPathValidatorsFromOptions(path_options)
 	callers, handlers = parseSchemaForMethods(schema_object)
 	predefined_classes = parseSchemaForDefinitions(schema_object)
 	class_template.addVar('pathParamParsers', '\n'.join(parsers))
+	class_template.addVar('possiblePathParamValuesSets', '\n'.join(sets))
+	class_template.addVar('urlValidators', '\n'.join(urlValidators))
 	class_template.addVar('paramRetrievers', '\n'.join(retrievers))
 	class_template.addVar('methodCallers', '\n'.join(callers))
 	class_template.addVar('methodHandlers', '\n'.join(handlers))

@@ -3,7 +3,8 @@
 @RestResource(urlMapping='{{basePath}}/*')
 global with sharing class {{ResourseClassName}}  {
 
-	{{possiblePathParamValuesSets}}
+{{possiblePathParamValuesSets}}
+
 	// map to store all desired params. Filled in storeParams()
 	private static Map<String, Object> parameters = new Map<String, Object>();
 	// default URL without * in the end
@@ -71,6 +72,13 @@ global with sharing class {{ResourseClassName}}  {
 		Integer code = ex instanceof APIException ? ((APIException)ex).statusCode : 500;
 		String body = JSON.serialize( exceptionList );
 		setupResponse(code, body);
+	}
+
+	// checks if given string is in given set. Throws exception if not
+	private static void checkUrlPart(String urlPart, Set<String> validOptions) {
+		if (!validOptions.contains(urlPart)){
+			throw new APIException(404, 'Not Found: ' + urlPart);
+		}
 	}
 
 	// returns request params or throws error if there is no such param
