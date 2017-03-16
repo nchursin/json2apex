@@ -4,6 +4,12 @@
 ## Description
 A tool to generate Apex code from JSON. You can use it to generate an Apex class either from a API resposne/request sample or from predefined schema.
 
+## Requirements
+1. Sublime Text 3
+2. [MavensMate](http://mavensmate.com/ "MavensMate") is highly recommended. This plugin uses MM's Apex syntax highlight.
+
+Since MavensMate requires ST 3, there will be no ST 2 support.
+
 ## Installation
 ### Manual
 Clone this repo to `your_sublime_dir/Packages/`. Restart Sublime if needed.
