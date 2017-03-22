@@ -110,6 +110,7 @@ def generateCodeForParameters(schema_object):
 	print("parameters['query'] >> ", parameters['query'])
 	query_params = []
 	body_defs = []
+	class_names = []
 	for param in parameters['query']:
 		print('param >>> ', param)
 		query_param_template = Template(templates['queryParamGetter'])
@@ -127,8 +128,14 @@ def generateCodeForParameters(schema_object):
 		if required:
 			query_param_template.addVar('urlPattern', param['path_pattern'])
 		query_params.append(query_param_template.compile())
+	for i, body_def in enumerate(parameters['body']):
+		class_name = 'NonPredefinedClass' + str(i)
+		generated = parseDefintion(body_def['schema'], class_name)
+		if generated:
+			body_defs.append(generated)
+			class_names.append(class_name)
 
-	return query_params, body_defs
+	return query_params, body_defs, class_names
 
 def parseSchemaForMethods(schema_object):
 	paths = schema_object['paths']
@@ -182,8 +189,10 @@ def parseDefintion(definition, def_name):
 			else:
 				if 'object' == p['type']:
 					addObjectToPattern(pattern, p)
-	elif 'object' == definition['type']:
+	elif 'type' in definition and 'object' == definition['type']:
 		addObjectToPattern(pattern, definition)
+	else:
+		return ''
 	return pattern.generateCode('\t')
 
 def addObjectToPattern(pattern, definition):
@@ -201,7 +210,8 @@ def parseSchema(schema_object):
 	sets, urlValidators = createPathValidatorsFromOptions(path_options)
 	callers, handlers = parseSchemaForMethods(schema_object)
 	predefined_classes = parseSchemaForDefinitions(schema_object)
-	query_params, body_defs = generateCodeForParameters(schema_object)
+	query_params, body_defs, class_names = generateCodeForParameters(schema_object)
+	classes_to_rename += class_names
 
 	class_template.addVar('pathParamParsers', '\n'.join(parsers))
 	class_template.addVar('possiblePathParamValuesSets', '\n'.join(sets))
@@ -211,6 +221,7 @@ def parseSchema(schema_object):
 	class_template.addVar('methodHandlers', '\n'.join(handlers))
 	class_template.addVar('methodHandlers', '\n'.join(handlers))
 	class_template.addVar('definitionClasses', ''.join(predefined_classes))
+	class_template.addVar('notdefinedClasses', '\n'.join(body_defs))
 	class_template.addVar('pathParams', '\n'.join(query_params))
 
 	apex_code = class_template.compile()

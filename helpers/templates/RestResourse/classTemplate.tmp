@@ -53,10 +53,10 @@ global with sharing class {{ResourseClassName}}  {
 		}
 	}
 
-	// Swagger definitions parsed to classes
+	{${'// Swagger definitions parsed to classes' if definitionClasses else ''}$}
 {{definitionClasses}}
 	
-	// Not predefined classes (not from defintions section)
+	{${'// Not predefined classes (not from defintions section)' if notdefinedClasses else ''}$}
 {{notdefinedClasses}}
 
 	// Templated only code
