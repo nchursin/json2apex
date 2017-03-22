@@ -40,9 +40,9 @@ class SwaggerToApexCommand(sublime_plugin.TextCommand):
 
 	def generateCode(self, edit, api_object):
 		# pattern = PatternClass.Pattern.fromSchema('PatternClass', api_object)
-		gen = Swagger2ApexLib.parseSchema(api_object)
+		gen, classList = Swagger2ApexLib.parseSchema(api_object)
 		# del(pattern)
-		self.classList = ["RestAPIClass"]
+		self.classList = classList
 		self.apexClassView = sublime.active_window().new_file()
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
 		self.apexClassView.insert(edit, 0, gen)

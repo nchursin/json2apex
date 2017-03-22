@@ -191,6 +191,7 @@ def addObjectToPattern(pattern, definition):
 		pattern.addPublicProperty( var_props['type'].capitalize(), var_name )
 
 def parseSchema(schema_object):
+	classes_to_rename = [ defaultClassName ]
 	apexrest_start = schema_object['basePath'].find(apexrest)
 	base_path = schema_object['basePath'][(apexrest_start + len(apexrest)):]
 	class_template = Template(templates['classTemplate'])
@@ -214,4 +215,4 @@ def parseSchema(schema_object):
 
 	apex_code = class_template.compile()
 	# print('\n\n>>><<<\n\n')
-	return apex_code
+	return apex_code, classes_to_rename
