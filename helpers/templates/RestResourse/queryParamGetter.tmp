@@ -1,0 +1,4 @@
+		{${"if(urlMatches('{{urlPattern}}')){" if required else ''}$}
+		{${"\t{{paramType}} {{paramName}} = requireRequestParam('{{paramName}}');" if required else ''}$}{${"{{paramType}} {{paramName}} = getOptionalRequestParam('{{paramName}}');" if not required else ''}$}
+		{${'\t' if required else ''}$}parameters.put('{{paramName}}', {{paramName}});
+		{${'}' if required else ''}$}

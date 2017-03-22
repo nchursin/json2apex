@@ -6,7 +6,6 @@ from PatternClass import Pattern as Pattern
 from TemplateHelper import Template as Template
 from TemplateHelper import TemplateArgs as TemplateArgs
 import os.path, imp, json
-# import sublime, sublime_plugin
 
 restresource_template_path = 'RestResourse/'
 other_templates_path = 'other/'
@@ -24,6 +23,7 @@ templates = {
 	'retrieveGetParam': restresource_template_path + 'retrieveGetParam',
 	'retrievePathParam': restresource_template_path + 'retrievePathParam',
 	'urlValidator': restresource_template_path + 'urlValidator',
+	'queryParamGetter': restresource_template_path + 'queryParamGetter',
 	'OptionSet': other_templates_path + 'SetConstDefinition',
 }
 
@@ -49,11 +49,6 @@ def parseSchemaForPaths(schema_object):
 						path_options[var_name] = []
 					if part not in path_options[var_name]:
 						path_options[var_name].append(part)
-					# required = False
-					# for param in path_def['parameters']:
-					# 	if var_name == param['name']:
-					# 		required = param['required'];
-					# 		break
 				if var_name not in processed_paths:
 					args = TemplateArgs()
 					args.addVar('pathParamName', var_name)
@@ -88,6 +83,52 @@ def createPathValidatorsFromOptions(path_options):
 		sets.append('\t' + set_template.compile())
 		validators.append(validator_template.compile())
 	return sets, validators
+
+def parseParamsFromSchema(schema_object):
+	parameters = {
+		'query':[
+			# {
+			# 	'name': '',
+			# 	'required': True
+			# }
+		],
+		'body': []
+	}
+	paths = schema_object['paths']
+	for p, path_def in paths.items():
+		for method, method_def in path_def.items():
+			if 'parameters' in method_def:
+				for param in method_def['parameters']:
+					if param['in'] in parameters:
+						param['path_pattern'] = p
+						parameters[param['in']].append(param)
+	return parameters
+
+def generateCodeForParameters(schema_object):
+	parameters = parseParamsFromSchema(schema_object)
+	print('parameters >> ', parameters)
+	print("parameters['query'] >> ", parameters['query'])
+	query_params = []
+	body_defs = []
+	for param in parameters['query']:
+		print('param >>> ', param)
+		query_param_template = Template(templates['queryParamGetter'])
+		if 'required' in param:
+			required = param['required']
+		else:
+			required = False
+		query_param_template.addVar('required', required)
+		if 'type' in param:
+			paramType = param['type']
+		else:
+			paramType = 'String'
+		query_param_template.addVar('paramType', param['type'].capitalize())
+		query_param_template.addVar('paramName', param['name'])
+		if required:
+			query_param_template.addVar('urlPattern', param['path_pattern'])
+		query_params.append(query_param_template.compile())
+
+	return query_params, body_defs
 
 def parseSchemaForMethods(schema_object):
 	paths = schema_object['paths']
@@ -159,6 +200,8 @@ def parseSchema(schema_object):
 	sets, urlValidators = createPathValidatorsFromOptions(path_options)
 	callers, handlers = parseSchemaForMethods(schema_object)
 	predefined_classes = parseSchemaForDefinitions(schema_object)
+	query_params, body_defs = generateCodeForParameters(schema_object)
+
 	class_template.addVar('pathParamParsers', '\n'.join(parsers))
 	class_template.addVar('possiblePathParamValuesSets', '\n'.join(sets))
 	class_template.addVar('urlValidators', '\n'.join(urlValidators))
@@ -167,6 +210,7 @@ def parseSchema(schema_object):
 	class_template.addVar('methodHandlers', '\n'.join(handlers))
 	class_template.addVar('methodHandlers', '\n'.join(handlers))
 	class_template.addVar('definitionClasses', ''.join(predefined_classes))
+	class_template.addVar('pathParams', '\n'.join(query_params))
 
 	apex_code = class_template.compile()
 	# print('\n\n>>><<<\n\n')

@@ -31,8 +31,11 @@ global with sharing class {{ResourseClassName}}  {
 		if(requestString.contains('?')){
 			requestString = requestString.substringBefore('?');
 		}
+		parameters.put('currentRestRequestUrl', requestString);
 
 {{paramRetrievers}}
+
+{{pathParams}}
 
 		validate();
 	}
@@ -126,6 +129,25 @@ global with sharing class {{ResourseClassName}}  {
 				result = !pathList.isEmpty() && !String.isBlank(pathList[0]) ? pathList[0] : null;
 			}
 		}
+		return result;
+	}
+
+	private static Boolean urlMatches(String urlPatternStr){
+		Boolean result = false;
+		
+		String reqUrl = (String)parameters.get('currentRestRequestUrl');
+		while (urlPatternStr.contains('{') && urlPatternStr.contains('}')){
+			String toReplace = '{' + urlPatternStr.substringBetween('{', '}') + '}';
+			urlPatternStr = urlPatternStr.replace(toReplace, '[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_]+');
+		}
+		if(urlPatternStr.endsWith('/')){
+			urlPatternStr = urlPatternStr.substring(0, urlPatternStr.length() -1);
+		}
+		urlPatternStr += '(/{0,1})';
+		Pattern urlPattern = Pattern.compile(urlPatternStr);
+		Matcher urlMatcher = urlPattern.matcher(reqUrl);
+		result = urlMatcher.matches()
+
 		return result;
 	}
 
