@@ -34,7 +34,6 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 	def getContent(self):
 		try:
 			contents = self.view.substr(sublime.Region(0, self.view.size()))
-			# api_object = json.loads(contents)
 			return contents
 		except ValueError:
 			sublime.error_message('Invalid JSON')
@@ -56,7 +55,6 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 			'classList': self.classList
 		}
 		print(args)
-		edit = self.apexClassView.begin_edit(0, '')
 		self.apexClassView.run_command('launch_class_renaming', args)
 
 class JsonToApexCommand(sublime_plugin.TextCommand):
@@ -87,14 +85,8 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
 		self.apexClassView.insert(edit, 0, gen)
 
-		# self.apexClassView.sel().clear()
-		# s = self.classList[2]
-		# matches = self.apexClassView.find_all(s)
-		# self.apexClassView.sel().add_all(matches)
 		self.renameClass()
 		
-		# print(matches)
-
 		del(converter)
 
 	def renameClass(self):
@@ -102,7 +94,6 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 			'classList': self.classList
 		}
 		print(args)
-		edit = self.apexClassView.begin_edit(0, '')
 		self.apexClassView.run_command('launch_class_renaming', args)
 
 class LaunchClassRenamingCommand(sublime_plugin.TextCommand):
