@@ -1,4 +1,4 @@
-import sys, os.path, imp, json
+import sys, os.path, imp, json, yaml
 import sublime, sublime_plugin
 from sys import modules
 from imp import reload
