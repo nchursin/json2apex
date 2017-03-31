@@ -10,6 +10,9 @@ if reloader_path in sys.modules:
 from .helpers import reloader
 reloader.reload()
 
+from .helpers import JSON2ApexLib
+from .helpers import PatternClass
+
 class SchemaToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
 	classList = []
