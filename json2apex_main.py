@@ -3,23 +3,15 @@ import sublime, sublime_plugin
 from sys import modules
 from imp import reload
 
-BASE_PATH = os.path.abspath(os.path.dirname(__file__)).split('/')[-1]
-INNER_CODE_DIRS = [
-  'helpers',
-]
+# Make sure all dependencies are reloaded on upgrade
+reloader_path = 'json2apex.helpers.reloader'
+if reloader_path in sys.modules:
+    imp.reload(sys.modules[reloader_path])
+from .helpers import reloader
+reloader.reload()
 
-EXT_PLUGIN_DIRS = []
-MODULE_DIRS = list(map(lambda el: BASE_PATH + os.sep + el, INNER_CODE_DIRS))
-MODULE_DIRS += EXT_PLUGIN_DIRS
-
-globals_var = globals()
-
-loader_path = os.path.abspath(os.path.dirname(__file__)) + os.sep + 'module_loader' + os.sep
-
-fileObject, file, description = imp.find_module( 'loader', [ loader_path ] )
-globals_var[ 'loader' ] = imp.load_module ( 'loader', fileObject, file, description )
-
-loader.load ( MODULE_DIRS, globals() )
+from .helpers import JSON2ApexLib
+from .helpers import PatternClass
 
 class SchemaToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
@@ -34,7 +26,6 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 	def getContent(self):
 		try:
 			contents = self.view.substr(sublime.Region(0, self.view.size()))
-			# api_object = json.loads(contents)
 			return contents
 		except ValueError:
 			sublime.error_message('Invalid JSON')
@@ -56,7 +47,6 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 			'classList': self.classList
 		}
 		print(args)
-		edit = self.apexClassView.begin_edit(0, '')
 		self.apexClassView.run_command('launch_class_renaming', args)
 
 class JsonToApexCommand(sublime_plugin.TextCommand):
@@ -87,14 +77,8 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
 		self.apexClassView.insert(edit, 0, gen)
 
-		# self.apexClassView.sel().clear()
-		# s = self.classList[2]
-		# matches = self.apexClassView.find_all(s)
-		# self.apexClassView.sel().add_all(matches)
 		self.renameClass()
 		
-		# print(matches)
-
 		del(converter)
 
 	def renameClass(self):
@@ -102,7 +86,6 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 			'classList': self.classList
 		}
 		print(args)
-		edit = self.apexClassView.begin_edit(0, '')
 		self.apexClassView.run_command('launch_class_renaming', args)
 
 class LaunchClassRenamingCommand(sublime_plugin.TextCommand):

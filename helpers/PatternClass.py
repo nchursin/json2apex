@@ -1,8 +1,8 @@
 import os, os.path
 import json
 import collections
-from TemplateHelper import Template
-from TemplateHelper import TemplateArgs
+from .TemplateHelper import Template
+from .TemplateHelper import TemplateArgs
 # import sublime, sublime_plugin
 
 
