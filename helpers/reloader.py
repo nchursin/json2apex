@@ -15,6 +15,7 @@ for mod in sys.modules:
 mods_load_order = [
     'logger',
     'templates'
+    'YAMLer'
     'TemplateHelper',
     'PatternClass',
     'JSON2ApexLib',

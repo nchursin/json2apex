@@ -1,8 +1,9 @@
 import os, os.path
-import json
+import json, yaml
 import collections
 from .TemplateHelper import Template
 from .TemplateHelper import TemplateArgs
+from .YAMLer import YAMLer
 # import sublime, sublime_plugin
 
 
@@ -124,6 +125,14 @@ class Pattern:
         decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
         obj = cls(name, 'public')
         obj.class_pattern = decoder.decode(schema_str)
+        return obj
+
+    @classmethod
+    def fromYaml(cls, name, schema_str):
+        decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
+        obj = cls(name, 'public')
+        # obj.class_pattern = YAMLer.ordered_load( schema_str, yaml.SafeLoader )
+        obj.class_pattern = YAMLer().ordered_load( schema_str )
         return obj
 
     def toJson(self):
