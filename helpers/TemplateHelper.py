@@ -4,6 +4,7 @@ import json
 import datetime
 import os.path, imp, json
 import re
+from .templates import TemplateGetter as TG
 
 template_dir = os.path.abspath(os.path.dirname(__file__)) + '/templates/'
 template_extension = '.tmp'
@@ -33,10 +34,11 @@ class Template():
 		self.getTemplateCode()
 
 	def getTemplateCode(self):
-		path_to_template = template_dir + self.template_name + template_extension
-		content = None
-		with open(path_to_template) as f:
-			content = f.read()
+		# path_to_template = template_dir + self.template_name + template_extension
+		content = TG.getTemplates()[self.template_name]
+		# content = None
+		# with open(path_to_template) as f:
+		# 	content = f.read()
 		self.template = content
 
 	def addVar(self, var_name, var_value):
@@ -63,6 +65,7 @@ class Template():
 		code_locals = self.template_args.template_vars
 		code_pure = code.replace(TEMPLATE_CONSTS['_code'],'').replace(TEMPLATE_CONSTS['_code_end'],'')
 		code_pure = 'output = ' + code_pure
+		print('>>> ', code_pure)
 		compiled = compile(code_pure, '<string>', 'exec')
 		exec(compiled, {}, code_locals)
 		return code_locals['output']
