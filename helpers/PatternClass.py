@@ -1,20 +1,27 @@
 import os, os.path
-import json
-from json2Apex.helpers.TemplateHelper import Template
-from json2Apex.helpers.TemplateHelper import TemplateArgs
+import json, yaml
+import collections
+from .TemplateHelper import Template
+from .TemplateHelper import TemplateArgs
+from .YAMLer import YAMLer
+from .FileReader import FileReader as FR
 # import sublime, sublime_plugin
+from . import logger
+log = logger.get(__name__)
+
+def __init__():
+    pass
 
 pattern_ext = '.json'
 pattern_dir = os.path.abspath(os.path.dirname(__file__)) + '/patterns/'
 
 def loadPattern(pattern_name):
     pattern_path = pattern_dir + pattern_name + pattern_ext
-    if os.path.isfile(pattern_path):
-        with open(pattern_path) as f:
-            content = f.read()
+    try:
+        content = FR.read(pattern_path)
         return json.loads(content)
-    else:
-        print('No pattern for interface ' + pattern_name + ' found!')
+    except:
+        log.warning('No pattern for interface ' + pattern_name + ' found!')
         return None
 
 def loadInterfacePattern(interface_name):
@@ -25,7 +32,8 @@ def loadInterfacePattern(interface_name):
 #     "extends": [],
 #     "implements": [
 #         "Comparable",
-#         "Schedulable"
+#         "Schedulable",
+#         "Auth.AuthProviderPlugin"
 #     ],
 #     "properties":
 #     {
@@ -54,20 +62,21 @@ def loadInterfacePattern(interface_name):
 #     {
 #         "public":
 #         {
-#             "void":
-#             [
+#             "methodName":
+#             {
+#                 "static": false,
+#                 "todo_comment": "this will be inside the method with TODO mark",
+#                 "comment": "this will be on top of method to describe what it does",
+#                 "returns": "void",
+#                 "arguments":
 #                 {
-#                     "name": "methodName",
-#                     "static": false,
-#                     "arguments":
-#                     {
-#                         "number": "Integer",
-#                         "str": "String"
-#                     }
+#                     "number": "Integer",
+#                     "str": "String"
 #                 }
-#             ]
+#             }
 #         }
 #     }
+#     'method_order': []
 # }
 
 def rreplace(s, old, new, occurrence):
@@ -82,6 +91,7 @@ class Pattern:
 
     generated_code = ''
 
+
     def __init__(self, name, access='private', abstract=False, virtual=False):
         self.class_pattern = {
             'extends': [],
@@ -93,7 +103,8 @@ class Pattern:
             'methods': {
                 'public': {},
                 'private': {}
-            }
+            },
+            'method_order': []
         }
         name_str = str(name)
         if name_str.startswith('List<'):
@@ -108,6 +119,21 @@ class Pattern:
     def fromSchema(cls, name, schema):
         obj = cls(name, 'public')
         obj.class_pattern = schema
+        return obj
+
+    @classmethod
+    def fromString(cls, name, schema_str):
+        decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
+        obj = cls(name, 'public')
+        obj.class_pattern = decoder.decode(schema_str)
+        return obj
+
+    @classmethod
+    def fromYaml(cls, name, schema_str):
+        decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
+        obj = cls(name, 'public')
+        # obj.class_pattern = YAMLer.ordered_load( schema_str, yaml.SafeLoader )
+        obj.class_pattern = YAMLer().ordered_load( schema_str )
         return obj
 
     def toJson(self):
@@ -161,6 +187,7 @@ class Pattern:
             class_type = 'abstract'
         class_template.addVar('classType', class_type)
         class_template.addVar('className', self.name)
+        self.formMethodOrder()
         p = self.class_pattern
 
         if 'extends' not in p:
@@ -170,23 +197,31 @@ class Pattern:
         class_template.addVar('extends', ', '.join(p['extends']))
         class_template.addVar('implements', ', '.join(p['implements']))
         self.loadInterfaces()
+
+        log.debug('methods >>> ' + str(p['methods']))
         
         prop_list = []
-        for prop_access,props in p['properties'].items():
-            for prop_name, prop_desc in props.items():
-                prop_def = self.genPropertyCode(prop_access, prop_name, prop_desc)
-                prop_list.append( prop_def )
+        if 'properties' in p:
+            for prop_access,props in p['properties'].items():
+                for prop_name, prop_desc in props.items():
+                    prop_def = self.genPropertyCode(prop_access, prop_name, prop_desc)
+                    prop_list.append( prop_def )
         methods_code = []
-        for method_access, methods in p['methods'].items():
-            for method_name, method_desc in methods.items():
-                method_code = self.genMethodCode(method_access, method_name, method_desc)
-                method_code = tab + '\t' + method_code.replace('\n', '\n\t' + tab)
-                methods_code.append(method_code)
+        if 'methods' in p:
+            for method_access, methods in p['methods'].items():
+                for method_name, method_desc in methods.items():
+                    method_code = self.genMethodCode(method_access, method_name, method_desc)
+                    method_code = tab + '\t' + method_code.replace('\n', '\n\t' + tab)
+                    methods_code.append(method_code)
         class_template.addVar('properties', prop_list)
         class_template.addVar('methods', '\n'.join(methods_code))
         result = class_template.compile()
         del class_template
         return result
+
+    def formMethodOrder(self):
+        p = self.class_pattern
+        
 
     def genMethodCode(self, method_access, method_name, method_desc):
         t = Template('other/Method')

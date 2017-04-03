@@ -4,9 +4,14 @@ import json
 import datetime
 import os.path, imp, json
 import re
+from .templates import TemplateGetter as TG
+from .FileReader import FileReader as FR
+
+from . import logger
+log = logger.get(__name__)
 
 template_dir = os.path.abspath(os.path.dirname(__file__)) + '/templates/'
-template_extension = '.tmp'
+template_extension = '.template'
 
 TEMPLATE_CONSTS = {
 	'_var': '{{',
@@ -14,6 +19,9 @@ TEMPLATE_CONSTS = {
 	'_end': '}}',
 	'_code_end': '}$}'
 }
+
+def __init__():
+    pass
 
 # template_args = {
 # 	template_vars:{
@@ -30,10 +38,13 @@ class Template():
 		self.getTemplateCode()
 
 	def getTemplateCode(self):
+		# content = TG.getTemplates()[self.template_name]
+		
 		path_to_template = template_dir + self.template_name + template_extension
-		content = None
-		with open(path_to_template) as f:
-			content = f.read()
+		content = FR.read(path_to_template)
+		# content = None
+		# with open(path_to_template) as f:
+		# 	content = f.read()
 		self.template = content
 
 	def addVar(self, var_name, var_value):
@@ -60,6 +71,7 @@ class Template():
 		code_locals = self.template_args.template_vars
 		code_pure = code.replace(TEMPLATE_CONSTS['_code'],'').replace(TEMPLATE_CONSTS['_code_end'],'')
 		code_pure = 'output = ' + code_pure
+		# log.debug('code_pure >>> ' + code_pure)
 		compiled = compile(code_pure, '<string>', 'exec')
 		exec(compiled, {}, code_locals)
 		return code_locals['output']
@@ -78,25 +90,25 @@ class Template():
 			template_vars[key] = var_occ
 		for name, placeholder in template_vars.items():
 			if(debug):
-				print('name >> ', name)
-				print('placeholder >> ', placeholder)
-				print('name in self.template_args.template_vars >> ', name in self.template_args.template_vars)
+				log.debug('name >> ', name)
+				log.debug('placeholder >> ', placeholder)
+				log.debug('name in self.template_args.template_vars >> ', name in self.template_args.template_vars)
 				if name in self.template_args.template_vars:
-					print('str(self.template_args.template_vars[name]) >> ', str(self.template_args.template_vars[name]))
+					log.debug('str(self.template_args.template_vars[name]) >> ', str(self.template_args.template_vars[name]))
 			if name in self.template_args.template_vars:
 				self.output = self.output.replace(placeholder, str(self.template_args.template_vars[name]))
 			else:
 				self.output = self.output.replace(placeholder, '')
 		if(debug):
-			print('template >> ', self.output)
+			log.debug('template >> ', self.output)
 		output_splitted = self.output.split('\n')
 		self.output = ''
 		empty_prev = False
 		for part in output_splitted:
 			if(debug):
-				print('part >> ', part)
-				print("re.match(r'^\s*$', part) >> ", not not re.match(r'^\s*$', part))
-				print('empty_prev >> ', not not empty_prev)
+				log.debug('part >> ', part)
+				log.debug("re.match(r'^\s*$', part) >> ", not not re.match(r'^\s*$', part))
+				log.debug('empty_prev >> ', not not empty_prev)
 			if re.match(r'^\s*$', part) and empty_prev:
 				pass
 			else:

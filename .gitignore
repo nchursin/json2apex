@@ -3,3 +3,9 @@ __pycache__/
 example_*
 *.pyc
 package-metadata.json
+run_tests.sh
+onflight-reload*
+build.sh
+build.xml
+json2Apex.sublime-build
+json2Apex.sublime-package
