@@ -5,6 +5,7 @@
 			{
 				"returns": "Integer",
 				"todo_comment": "implement compare logic",
+				"comment": "Fired when sort() method of the list is called. Use to compare objects",
 				"arguments": {
 				    "other": "Object"
 				}

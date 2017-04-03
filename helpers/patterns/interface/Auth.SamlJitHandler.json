@@ -1,0 +1,32 @@
+{
+	"methods":{
+		"public": {
+			"createUser": 
+			{
+				"returns": "User",
+				"comment": "Returns a User object using the specified Federation ID.",
+				"arguments": {
+				    "samlSsoProviderId": "ID",
+				    "communityId": "ID",
+				    "portalId": "ID",
+				    "federationId": "String",
+				    "attributes": "Map<String,String>",
+				    "assertion": "String"
+				}
+			},
+			"updateUser": 
+			{
+				"comment": "Updates the specified user’s information.",
+				"arguments": {
+				    "userId": "ID",
+				    "samlSsoProviderId": "ID",
+				    "communityId": "ID",
+				    "portalId": "ID",
+				    "federationId": "String",
+				    "attributes": "Map<String,String>",
+				    "assertion": "String"
+				}
+			}
+		}
+	}
+}

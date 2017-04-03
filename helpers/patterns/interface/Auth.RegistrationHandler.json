@@ -1,0 +1,24 @@
+{
+	"methods":{
+		"public": {
+			"createUser": 
+			{
+				"returns": "User",
+				"comment": "Returns a User object using the specified portal ID and user information from the third party, such as the username and email address.",
+				"arguments": {
+				    "portalId": "ID",
+				    "userData": "Auth.UserData"
+				}
+			},
+			"updateUser": 
+			{
+				"comment": "Updates the specified user’s information.",
+				"arguments": {
+				    "userId": "ID",
+				    "portalId": "ID",
+				    "userData": "Auth.UserData"
+				}
+			}
+		}
+	}
+}
