@@ -2,7 +2,7 @@
 Logging module for Sublime Text plugins. Tries to emulate normal Python logger.
 by @blopker
 '''
-debug = True
+debug = False
 
 class Logger(object):
     def __init__(self, name):
