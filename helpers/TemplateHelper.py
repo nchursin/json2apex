@@ -7,7 +7,7 @@ import re
 from .templates import TemplateGetter as TG
 
 template_dir = os.path.abspath(os.path.dirname(__file__)) + '/templates/'
-template_extension = '.tmp'
+template_extension = '.template'
 
 TEMPLATE_CONSTS = {
 	'_var': '{{',
