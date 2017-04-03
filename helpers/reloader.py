@@ -5,26 +5,32 @@ from . import logger
 log = logger.get(__name__)
 
 # Dependecy reloader stolen from the Emmet plugin
-parent = 'json2apex.helpers'
+parent = 'json2Apex.helpers'
 
 reload_mods = []
-for mod in sys.modules:
-    if mod.startswith(parent) and sys.modules[mod] is not None:
-        reload_mods.append(mod)
+def fill_reload_mods():
+    reload_mods = []
+    for mod in sys.modules:
+        if mod.startswith(parent) and sys.modules[mod] is not None:
+            reload_mods.append(mod)
+    return reload_mods
+
+fill_reload_mods()
 
 mods_load_order = [
     'logger',
-    'templates'
-    'YAMLer'
+    'templates',
+    'YAMLer',
     'TemplateHelper',
     'PatternClass',
     'JSON2ApexLib',
 ]
 
 mods_load_order = [parent + '.' + mod for mod in mods_load_order]
-
+print('mods_load_order >> ', mods_load_order)
 
 def reload():
+    reload_mods = fill_reload_mods()
     log.debug('reloading')
     for mod in mods_load_order:
         if mod in reload_mods:
