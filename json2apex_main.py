@@ -12,6 +12,8 @@ reloader.reload()
 
 from .helpers import JSON2ApexLib
 from .helpers import PatternClass
+from . import logger
+log = logger.get(__name__)
 
 class SchemaToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
@@ -20,7 +22,6 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		api_object = self.getContent()
 		if(api_object is not None):
-			print(' dwdxs')
 			self.generateCode(edit, api_object)
 
 	def getContent(self):
@@ -46,7 +47,7 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 		args = {
 			'classList': self.classList
 		}
-		print(args)
+		log.debug(args)
 		self.apexClassView.run_command('launch_class_renaming', args)
 
 class YamlSchemaToApexCommand(sublime_plugin.TextCommand):
@@ -56,7 +57,6 @@ class YamlSchemaToApexCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		api_object = self.getContent()
 		if(api_object is not None):
-			print(' dwdxs')
 			self.generateCode(edit, api_object)
 
 	def getContent(self):
@@ -83,7 +83,7 @@ class YamlSchemaToApexCommand(sublime_plugin.TextCommand):
 		args = {
 			'classList': self.classList
 		}
-		print(args)
+		log.debug(args)
 		edit = self.apexClassView.begin_edit(0, '')
 		self.apexClassView.run_command('launch_class_renaming', args)
 
@@ -110,7 +110,7 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 		gen = converter.generateFromSample(api_object)
 		self.classList = ["API", "Root_object"]
 		self.classList += list(converter.formedClasses.values())
-		print(self.classList)
+		log.debug(self.classList)
 		self.apexClassView = sublime.active_window().new_file()
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
 		self.apexClassView.insert(edit, 0, gen)
@@ -123,7 +123,7 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 		args = {
 			'classList': self.classList
 		}
-		print(args)
+		log.debug(args)
 		self.apexClassView.run_command('launch_class_renaming', args)
 
 class LaunchClassRenamingCommand(sublime_plugin.TextCommand):

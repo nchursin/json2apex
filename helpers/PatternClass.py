@@ -5,7 +5,8 @@ from .TemplateHelper import Template
 from .TemplateHelper import TemplateArgs
 from .YAMLer import YAMLer
 # import sublime, sublime_plugin
-
+from . import logger
+log = logger.get(__name__)
 
 def __init__():
     pass
@@ -20,7 +21,7 @@ def loadPattern(pattern_name):
             content = f.read()
         return json.loads(content)
     else:
-        print('No pattern for interface ' + pattern_name + ' found!')
+        log.warning('No pattern for interface ' + pattern_name + ' found!')
         return None
 
 def loadInterfacePattern(interface_name):
