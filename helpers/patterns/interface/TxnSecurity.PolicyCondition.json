@@ -1,0 +1,14 @@
+{
+	"methods":{
+		"public": {
+			"evaluate": 
+			{
+				"returns": "Boolean",
+				"comment": "Evaluates an event against a transaction security policy. If the event triggers the policy, true is returned.",
+				"arguments": {
+				    "event": "TxnSecurity.Event"
+				}
+			}
+		}
+	}
+}
