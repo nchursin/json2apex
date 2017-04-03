@@ -4,3 +4,4 @@ example_*
 *.pyc
 package-metadata.json
 run_tests.sh
+onflight-reload*
