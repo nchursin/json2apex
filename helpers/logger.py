@@ -31,7 +31,7 @@ class Logger(object):
         else:
             message = messages[0]
 
-        print('{level}:{name}:{message}'.format(level=level,
+        print('{level}:{name}: {message}'.format(level=level,
             name=self.name, message=message))
 
 
