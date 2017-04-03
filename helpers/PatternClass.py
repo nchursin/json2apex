@@ -4,6 +4,7 @@ import collections
 from .TemplateHelper import Template
 from .TemplateHelper import TemplateArgs
 from .YAMLer import YAMLer
+from .FileReader import FileReader as FR
 # import sublime, sublime_plugin
 from . import logger
 log = logger.get(__name__)
@@ -16,11 +17,10 @@ pattern_dir = os.path.abspath(os.path.dirname(__file__)) + '/patterns/'
 
 def loadPattern(pattern_name):
     pattern_path = pattern_dir + pattern_name + pattern_ext
-    if os.path.isfile(pattern_path):
-        with open(pattern_path) as f:
-            content = f.read()
+    try:
+        content = FR.read(pattern_path)
         return json.loads(content)
-    else:
+    except:
         log.warning('No pattern for interface ' + pattern_name + ' found!')
         return None
 
@@ -197,6 +197,8 @@ class Pattern:
         class_template.addVar('extends', ', '.join(p['extends']))
         class_template.addVar('implements', ', '.join(p['implements']))
         self.loadInterfaces()
+
+        log.debug('methods >>> ' + str(p['methods']))
         
         prop_list = []
         if 'properties' in p:
