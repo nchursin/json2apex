@@ -1,0 +1,16 @@
+{
+	"methods":{
+		"public": {
+			"createAccount": 
+			{
+				"returns": "String",
+				"comment": "Implement this method to specify which attributes to disable in the context of the canvas app. A disabled attribute will set the associated canvas context information to null.",
+				"arguments": {
+				    "firstName": "String",
+				    "lastName": "String",
+				    "siteAdminId": "Id"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"methods":{
+		"public": {
+			"describe": 
+			{
+				"returns": "Process.PluginDescribeResult",
+				"comment": "Returns a Process.PluginDescribeResult object that describes this method call."
+			},
+			"invoke": 
+			{
+				"returns": "Process.PluginResult",
+				"comment": "Primary method that the system invokes when the class that implements the interface is instantiated.",
+				"arguments": {
+				    "request": "Process.PluginRequest"
+				}
+			}
+		}
+	}
+}

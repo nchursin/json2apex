@@ -1,0 +1,16 @@
+{
+	"methods":{
+		"public": {
+			"getApplicationContext": 
+			{
+				"returns": "Canvas.ApplicationContext",
+				"comment": "Retrieves the application context information."
+			},
+			"getEnvironmentContext": 
+			{
+				"returns": "Canvas.EnvironmentContext",
+				"comment": "Retrieves the environment context information."
+			}
+		}
+	}
+}
