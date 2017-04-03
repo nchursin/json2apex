@@ -1,0 +1,22 @@
+{
+	"methods":{
+		"public": {
+			"generateUrlFor": 
+			{
+				"returns": "System.PageReference[]",
+				"comment": "Maps a list of Salesforce URLs to a list of user-friendly URLs.",
+				"arguments": {
+				    "salesforceUrls": "System.PageReference[]"
+				}
+			},
+			"mapRequestUrl": 
+			{
+				"returns": "System.PageReference",
+				"comment": "Maps a user-friendly URL to a Salesforce URL.",
+				"arguments": {
+				    "userFriendlyUrl": "System.PageReference"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"methods":{
+		"public": {
+			"excludeContextTypes": 
+			{
+				"comment": "Executes the custom Apex action specified in the context parameter of the context object, NotificationActionContext.",
+				"arguments": {
+				    "context": "Reports.NotificationActionContext"
+				}
+			}
+		}
+	}
+}
