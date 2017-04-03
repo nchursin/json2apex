@@ -39,6 +39,7 @@ Sample schema can be found [here](https://github.com/nchursin/json2apex/blob/mas
 3. Rename the class either manually or using a text input in the bottom of the buffer.
 
 Currently the plugin will generate methods only for interfaces from the `System` namespace. 
+Unfourtenately this feature was not tested in a package state, so it doesn't work if you've installed plugin from Package Control. Sorry for inconvinience, I'm working on supporting packaged state.
 
 After renaming is over Sublime will select all the generated code for you to copy it anywhere you want.
 
