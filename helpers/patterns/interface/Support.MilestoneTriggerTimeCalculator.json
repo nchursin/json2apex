@@ -1,0 +1,15 @@
+{
+	"methods":{
+		"public": {
+			"calculateMilestoneTriggerTime": 
+			{
+				"returns": "Integer",
+				"comment": "Calculates the milestone trigger time based on the specified case and milestone type and returns the time in minutes.",
+				"arguments": {
+				    "caseId": "String",
+				    "milestoneTypeId": "String"
+				}
+			}
+		}
+	}
+}

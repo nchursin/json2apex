@@ -1,0 +1,14 @@
+{
+	"methods":{
+		"public": {
+			"getDefaultTemplateId": 
+			{
+				"returns": "ID",
+				"comment": "Returns the ID of the email template to preload for the case currently being viewed in the case feed using the specified case ID.",
+				"arguments": {
+				    "caseId": "ID"
+				}
+			}
+		}
+	}
+}

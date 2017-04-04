@@ -1,0 +1,18 @@
+{
+	"methods":{
+		"public": {
+			"excludeContextTypes": 
+			{
+				"returns": "Set<Canvas.ContextTypeEnum>",
+				"comment": "Implement this method to specify which attributes to disable in the context of the canvas app. A disabled attribute will set the associated canvas context information to null."
+			},
+			"onRender": 
+			{
+				"comment": "If implemented, this method is called whenever the canvas app is rendered.",
+				"arguments": {
+				    "renderContext": "Canvas.RenderContext"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"methods":{
+		"public": {
+			"onInitDefaults": 
+			{
+				"comment": "Implement this method to provide default values for the standard Email Action in Case Feed.",
+				"arguments": {
+				    "actionDefaults": "QuickAction.QuickActionDefaults[]"
+				}
+			}
+		}
+	}
+}

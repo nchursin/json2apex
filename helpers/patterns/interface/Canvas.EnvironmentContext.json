@@ -1,0 +1,52 @@
+{
+	"methods":{
+		"public": {
+			"addEntityField": 
+			{
+				"comment": "When you use the <apex:canvasApp> component to display a canvas app on a Visualforce page, and that page is associated with an object (placed on the page layout, for example), you can specify fields to be returned from the related object.",
+				"arguments": {
+				    "fieldName": "String"
+				}
+			},
+			"addEntityFields": 
+			{
+				"comment": "When you use the <apex:canvasApp> component to display a canvas app on a Visualforce page, and that page is associated with an object (placed on the page layout, for example), you can specify fields to be returned from the related object.",
+				"arguments": {
+				    "fieldName": "Set<String>"
+				}
+			},
+			"getDisplayLocation": 
+			{
+				"returns": "String",
+				"comment": "Retrieves the display location where the canvas app is being called from."
+			},
+			"getEntityFields": 
+			{
+				"returns": "LIST<String>",
+				"comment": "Retrieves the list of object fields that are returned in the signed request Record object when the component appears on a Visualforce page that’s placed on an object."
+			},
+			"getLocationUrl": 
+			{
+				"returns": "String",
+				"comment": "Retrieves the location URL of the canvas app."
+			},
+			"getParametersAsJSON": 
+			{
+				"returns": "String",
+				"comment": "Retrieves the current custom parameters for the canvas app. Parameters are returned as a JSON string."
+			},
+			"getSublocation": 
+			{
+				"returns": "String",
+				"comment": "Retrieves the display sublocation where the canvas app is being called from."
+			},
+			"setParametersAsJSON": 
+			{
+				"comment": "Sets the custom parameters for the canvas app.",
+				"arguments": {
+				    "jsonString": "String"
+				}
+			}
+		}
+	}
+}

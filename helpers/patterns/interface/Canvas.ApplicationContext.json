@@ -1,0 +1,38 @@
+{
+	"methods":{
+		"public": {
+			"getCanvasUrl": 
+			{
+				"returns": "String",
+				"comment": "Use this method to get the URL of the canvas app"
+			},
+			"getDeveloperName": 
+			{
+				"returns": "String",
+				"comment": "Use this method to get the API name of the canvas app"
+			},
+			"getName": 
+			{
+				"returns": "String",
+				"comment": "Use this method to get the name of the canvas app."
+			},
+			"getNamespace": 
+			{
+				"returns": "String",
+				"comment": "Use this method to get the Salesforce namespace prefix that’s associated with the canvas app."
+			},
+			"getVersion": 
+			{
+				"returns": "String",
+				"comment": "Use this method to get the current version of the canvas app. "
+			},
+			"setCanvasUrlPath": 
+			{
+				"comment": "Use this method to override the URL path and query string of the canvas app.",
+				"arguments": {
+				    "newPath": "String"
+				}
+			}
+		}
+	}
+}

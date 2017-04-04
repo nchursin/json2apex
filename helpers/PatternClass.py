@@ -1,10 +1,13 @@
 import os, os.path
-import json
+import json, yaml
 import collections
-from TemplateHelper import Template
-from TemplateHelper import TemplateArgs
+from .TemplateHelper import Template
+from .TemplateHelper import TemplateArgs
+from .YAMLer import YAMLer
+from .FileReader import FileReader as FR
 # import sublime, sublime_plugin
-
+from . import logger
+log = logger.get(__name__)
 
 def __init__():
     pass
@@ -14,12 +17,11 @@ pattern_dir = os.path.abspath(os.path.dirname(__file__)) + '/patterns/'
 
 def loadPattern(pattern_name):
     pattern_path = pattern_dir + pattern_name + pattern_ext
-    if os.path.isfile(pattern_path):
-        with open(pattern_path) as f:
-            content = f.read()
+    try:
+        content = FR.read(pattern_path)
         return json.loads(content)
-    else:
-        print('No pattern for interface ' + pattern_name + ' found!')
+    except:
+        log.warning('No pattern for interface ' + pattern_name + ' found!')
         return None
 
 def loadInterfacePattern(interface_name):
@@ -126,6 +128,14 @@ class Pattern:
         obj.class_pattern = decoder.decode(schema_str)
         return obj
 
+    @classmethod
+    def fromYaml(cls, name, schema_str):
+        decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
+        obj = cls(name, 'public')
+        # obj.class_pattern = YAMLer.ordered_load( schema_str, yaml.SafeLoader )
+        obj.class_pattern = YAMLer().ordered_load( schema_str )
+        return obj
+
     def toJson(self):
         return json.dumps(self.class_pattern)
 
@@ -187,6 +197,8 @@ class Pattern:
         class_template.addVar('extends', ', '.join(p['extends']))
         class_template.addVar('implements', ', '.join(p['implements']))
         self.loadInterfaces()
+
+        log.debug('methods >>> ' + str(p['methods']))
         
         prop_list = []
         if 'properties' in p:

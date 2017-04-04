@@ -1,0 +1,14 @@
+{
+	"methods":{
+		"public": {
+			"getOpportunityTerritory2Assignments": 
+			{
+				"returns": "Map<Id,Id>",
+				"comment": "Returns the mapping of opportunities to territory IDs.",
+				"arguments": {
+				    "opportunityIds": "List<Id>"
+				}
+			}
+		}
+	}
+}
