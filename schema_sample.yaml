@@ -1,0 +1,29 @@
+extends: []
+implements:
+- Comparable
+- Schedulable
+- Auth.AuthProviderPlugin
+- Canvas.EnvironmentContext
+properties:
+  public:
+    someStaticVar:
+      type: Integer
+      static: true
+    someVar:
+      type: String
+  private:
+    somePrivateStaticVar:
+      type: Integer
+      static: true
+    somePrivateVar:
+      type: String
+methods:
+  public:
+    methodName:
+      static: false
+      todo_comment: this will be inside the method with TODO mark
+      comment: this will be on top of method to describe what it does
+      returns: void
+      arguments:
+        number: Integer
+        str: String

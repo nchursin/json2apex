@@ -29,18 +29,18 @@ Install [Package Control](https://packagecontrol.io/installation) if you don't h
 2. Open it in Sublime Text 3
 3. Using `Ctrl+Shit+P` (or `⌘+Shift+P` on Mac) find `JSON2Apex: Convert sample to Apex`
 4. Press Enter
-5. You will see generated Apex code. Also a text input appears in the bottom of the buffer. Use this input to change generated class names quickly.
+5. You will see generated Apex code. Also a text input appears at the bottom of the buffer. Use this input to change generated class names quickly.
 
-### Generate class from JSON schema
-Sample schema can be found [here](https://github.com/nchursin/json2apex/blob/master/schema_sample.json "Schema Sample")
+### Generate class from JSON or YAML schema
+JSON sample schema can be found [here](https://github.com/nchursin/json2apex/blob/master/schema_sample.json "JSON Schema")
+YAML sample schema can be found [here](https://github.com/nchursin/json2apex/blob/master/schema_sample.yaml "YAML Schema")
 
 1. Create a schema.
-2. Use `JSON2Apex: Convert JSON schema to Apex` command. (`Ctrl+Shit+P` (or `⌘+Shift+P` on Mac) to find it)
-3. Rename the class either manually or using a text input in the bottom of the buffer.
+2. Use `JSON2Apex: Convert JSON schema to Apex` (`JSON2Apex: Convert YAML schema to Apex` for YAML schemas) command. (`Ctrl+Shit+P` (or `⌘+Shift+P` on Mac) to find it)
+3. Rename the class either manually or using a text input at the bottom of the buffer.
 
 After renaming is over Sublime will select all the generated code for you to copy it anywhere you want.
 
 ## Future plans
 
 1. Swagger JSON to Apex REST Definition generation
-2. YAML schemas support
