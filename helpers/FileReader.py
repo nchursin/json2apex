@@ -3,7 +3,7 @@ import zipfile
 
 from . import logger
 log = logger.get(__name__)
-
+folder_name = 'helpers'
 
 class FileReader():
 	def __init__(self):
@@ -11,7 +11,11 @@ class FileReader():
 
 	@classmethod
 	def isPackage(cls):
-		package_container = os.path.abspath(os.path.dirname(__file__)).replace('/helpers','')
+		package_container = os.path.abspath(os.path.dirname(__file__))
+		if(package_container.endswith(folder_name)):
+			package_container = package_container[:-len(folder_name)]
+		if(package_container.endswith(os.sep)):
+			package_container = package_container[:-len(os.sep)]
 		name, ext = os.path.splitext(package_container)
 		return '.sublime-package' == ext, package_container
 
@@ -23,7 +27,7 @@ class FileReader():
 
 	@classmethod
 	def readFileFromZip(cls, zip_path, path_inside):
-		if path_inside[0] == '/':
+		if path_inside[0] == os.sep:
 			path_inside = path_inside[1:]
 		archive = zipfile.ZipFile(zip_path, 'r')
 		with archive.open(path_inside) as f:
