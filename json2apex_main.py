@@ -50,42 +50,42 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 		# log.debug(args)
 		self.apexClassView.run_command('launch_class_renaming', args)
 
-class YamlSchemaToApexCommand(sublime_plugin.TextCommand):
-	apexClassView = {}
-	classList = []
+# class YamlSchemaToApexCommand(sublime_plugin.TextCommand):
+# 	apexClassView = {}
+# 	classList = []
 	
-	def run(self, edit):
-		api_object = self.getContent()
-		if(api_object is not None):
-			self.generateCode(edit, api_object)
+# 	def run(self, edit):
+# 		api_object = self.getContent()
+# 		if(api_object is not None):
+# 			self.generateCode(edit, api_object)
 
-	def getContent(self):
-		try:
-			contents = self.view.substr(sublime.Region(0, self.view.size()))
-			# api_object = json.loads(contents)
-			return contents
-		except ValueError:
-			sublime.error_message('Invalid JSON')
-			return None
+# 	def getContent(self):
+# 		try:
+# 			contents = self.view.substr(sublime.Region(0, self.view.size()))
+# 			# api_object = json.loads(contents)
+# 			return contents
+# 		except ValueError:
+# 			sublime.error_message('Invalid JSON')
+# 			return None
 
-	def generateCode(self, edit, api_object):
-		pattern = PatternClass.Pattern.fromYaml('PatternClass', api_object)
-		gen = pattern.generateCode()
-		del(pattern)
-		self.classList = ["PatternClass"]
-		self.apexClassView = sublime.active_window().new_file()
-		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
-		self.apexClassView.insert(edit, 0, gen)
+# 	def generateCode(self, edit, api_object):
+# 		pattern = PatternClass.Pattern.fromYaml('PatternClass', api_object)
+# 		gen = pattern.generateCode()
+# 		del(pattern)
+# 		self.classList = ["PatternClass"]
+# 		self.apexClassView = sublime.active_window().new_file()
+# 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
+# 		self.apexClassView.insert(edit, 0, gen)
 
-		self.renameClass()
+# 		self.renameClass()
 
-	def renameClass(self):
-		args = {
-			'classList': self.classList
-		}
-		# log.debug(args)
-		edit = self.apexClassView.begin_edit(0, '')
-		self.apexClassView.run_command('launch_class_renaming', args)
+# 	def renameClass(self):
+# 		args = {
+# 			'classList': self.classList
+# 		}
+# 		# log.debug(args)
+# 		edit = self.apexClassView.begin_edit(0, '')
+# 		self.apexClassView.run_command('launch_class_renaming', args)
 
 class JsonToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
