@@ -21,7 +21,7 @@ class FileReader():
 
 	@classmethod
 	def readFileFromFolder(cls, path):
-		with open(path_to_template) as f:
+		with open(path) as f:
 			content = f.read()
 		return content
 
