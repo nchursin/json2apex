@@ -1,5 +1,5 @@
 import os, os.path
-import json, yaml
+import json
 import collections
 from .TemplateHelper import Template
 from .TemplateHelper import TemplateArgs
@@ -130,11 +130,12 @@ class Pattern:
 
     @classmethod
     def fromYaml(cls, name, schema_str):
-        decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
-        obj = cls(name, 'public')
-        # obj.class_pattern = YAMLer.ordered_load( schema_str, yaml.SafeLoader )
-        obj.class_pattern = YAMLer().ordered_load( schema_str )
-        return obj
+        pass
+        # decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
+        # obj = cls(name, 'public')
+        # # obj.class_pattern = YAMLer.ordered_load( schema_str, yaml.SafeLoader )
+        # obj.class_pattern = YAMLer().ordered_load( schema_str )
+        # return obj
 
     def toJson(self):
         return json.dumps(self.class_pattern)
