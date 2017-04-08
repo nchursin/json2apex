@@ -1,9 +1,12 @@
-import sys, os, os.path
+import sys
+import os
+import os.path
 import zipfile
 
 from . import logger
 log = logger.get(__name__)
 folder_name = 'helpers'
+
 
 class FileReader():
 	def __init__(self):
@@ -42,7 +45,8 @@ class FileReader():
 		log.debug('is_pack >> ' + str(is_pack))
 		log.debug('pack_container >> ' + pack_container)
 		if is_pack:
-			content = cls.readFileFromZip(pack_container, path.replace(pack_container, ''))
+			content = cls.readFileFromZip(
+				pack_container, path.replace(pack_container, ''))
 		else:
 			content = cls.readFileFromFolder(path)
 		return content
