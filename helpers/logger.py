@@ -4,7 +4,9 @@ by @blopker
 '''
 debug = False
 
+
 class Logger(object):
+
     def __init__(self, name):
         self.name = name
 
@@ -31,8 +33,8 @@ class Logger(object):
         else:
             message = messages[0]
 
-        print('{level}:{name}: {message}'.format(level=level,
-            name=self.name, message=message))
+        print('{level}:{name}: {message}'.format(
+            level=level, name=self.name, message=message))
 
 
 def get(name):

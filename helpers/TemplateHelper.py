@@ -2,7 +2,9 @@ import sys
 import os
 import json
 import datetime
-import os.path, imp, json
+import os.path
+import imp
+import json
 import re
 from .templates import TemplateGetter as TG
 from .FileReader import FileReader as FR
@@ -20,14 +22,16 @@ TEMPLATE_CONSTS = {
 	'_code_end': '}$}'
 }
 
+
 def __init__():
-    pass
+	pass
 
 # template_args = {
 # 	template_vars:{
 # 		name: value
 # 	},
 # }
+
 
 class Template():
 	"""Arguments to be passed to template"""
@@ -63,13 +67,16 @@ class Template():
 		code_end_length = len(TEMPLATE_CONSTS['_code_end'])
 		code_start = self.output.find(TEMPLATE_CONSTS['_code'])
 		template_replace = self.output[code_start:]
-		code_end = code_start + template_replace.find(TEMPLATE_CONSTS['_code_end']) + code_end_length
+		code_end = code_start + template_replace.find(
+			TEMPLATE_CONSTS['_code_end']) + code_end_length
 		code_occurence = self.output[code_start:code_end]
 		return code_occurence
 
 	def compileCode(self, code):
 		code_locals = self.template_args.template_vars
-		code_pure = code.replace(TEMPLATE_CONSTS['_code'],'').replace(TEMPLATE_CONSTS['_code_end'],'')
+		code_pure = code.replace(
+			TEMPLATE_CONSTS['_code'], '').replace(
+			TEMPLATE_CONSTS['_code_end'], '')
 		code_pure = 'output = ' + code_pure
 		# log.debug('code_pure >>> ' + code_pure)
 		compiled = compile(code_pure, '<string>', 'exec')
@@ -86,17 +93,14 @@ class Template():
 		pattern = TEMPLATE_CONSTS['_var'] + '\w+' + TEMPLATE_CONSTS['_end']
 		template_var_occurences = re.findall(pattern, self.output)
 		for var_occ in template_var_occurences:
-			key = var_occ.replace(TEMPLATE_CONSTS['_var'], '').replace(TEMPLATE_CONSTS['_end'], '')
+			key = var_occ.replace(
+				TEMPLATE_CONSTS['_var'], '').replace(
+				TEMPLATE_CONSTS['_end'], '')
 			template_vars[key] = var_occ
 		for name, placeholder in template_vars.items():
-			if(debug):
-				log.debug('name >> ', name)
-				log.debug('placeholder >> ', placeholder)
-				log.debug('name in self.template_args.template_vars >> ', name in self.template_args.template_vars)
-				if name in self.template_args.template_vars:
-					log.debug('str(self.template_args.template_vars[name]) >> ', str(self.template_args.template_vars[name]))
 			if name in self.template_args.template_vars:
-				self.output = self.output.replace(placeholder, str(self.template_args.template_vars[name]))
+				self.output = self.output.replace(
+					placeholder, str(self.template_args.template_vars[name]))
 			else:
 				self.output = self.output.replace(placeholder, '')
 		if(debug):
@@ -114,7 +118,10 @@ class Template():
 			else:
 				self.output += '\n' + part
 				empty_prev = re.match(r'^\s*$', part)
-		self.output = ' '.join(filter(lambda x: not re.match(r'^\s*$', x) , self.output.split(' ')))
+		self.output = ' '.join(
+			filter(
+				lambda x: not re.match(r'^\s*$', x),
+				self.output.split(' ')))
 		self.output = self.output[1:]
 		return self.output
 
@@ -129,4 +136,3 @@ class TemplateArgs():
 
 	def addCodeArgument(self, var_name, var_value):
 		self.template_vars[var_name] = var_value
-		

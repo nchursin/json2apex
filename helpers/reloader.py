@@ -8,6 +8,8 @@ log = logger.get(__name__)
 parent = 'json2Apex.helpers'
 
 reload_mods = []
+
+
 def fill_reload_mods():
     reload_mods = []
     for mod in sys.modules:
@@ -29,6 +31,7 @@ mods_load_order = [
 ]
 
 mods_load_order = [parent + '.' + mod for mod in mods_load_order]
+
 
 def reload():
     reload_mods = fill_reload_mods()
