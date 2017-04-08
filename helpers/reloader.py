@@ -22,6 +22,7 @@ fill_reload_mods()
 
 mods_load_order = [
     'logger',
+    'pyyaml'
     'FileReader',
     'YAMLer',
     'TemplateHelper',
