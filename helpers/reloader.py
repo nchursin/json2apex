@@ -17,11 +17,11 @@ def fill_reload_mods():
             reload_mods.append(mod)
     return reload_mods
 
+
 fill_reload_mods()
 
 mods_load_order = [
     'logger',
-    'templates',
     'FileReader',
     'YAMLer',
     'TemplateHelper',

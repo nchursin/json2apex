@@ -1,11 +1,8 @@
 import sys
-import os.path
 import imp
 import json
 import sublime
 import sublime_plugin
-from sys import modules
-from imp import reload
 
 
 # Make sure all dependencies are reloaded on upgrade
@@ -25,7 +22,7 @@ from .helpers import PatternClass
 class SchemaToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
 	classList = []
-	
+
 	def run(self, edit):
 		api_object = self.getContent()
 		if(api_object is not None):
@@ -101,7 +98,7 @@ class SwaggerToApexCommand(sublime_plugin.TextCommand):
 # class YamlSchemaToApexCommand(sublime_plugin.TextCommand):
 # 	apexClassView = {}
 # 	classList = []
-	
+
 # 	def run(self, edit):
 # 		api_object = self.getContent()
 # 		if(api_object is not None):
@@ -166,7 +163,7 @@ class JsonToApexCommand(sublime_plugin.TextCommand):
 		self.apexClassView.insert(edit, 0, gen)
 
 		self.renameClass()
-		
+
 		del(converter)
 
 	def renameClass(self):
