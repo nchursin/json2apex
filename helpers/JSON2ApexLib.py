@@ -7,7 +7,7 @@ def __init__():
 
 
 types = {
-	float: 'Double',
+	float: 'Decimal',
 	int: 'Integer',
 	bool: 'Boolean',
 	str: 'String',
@@ -17,7 +17,7 @@ types = {
 	'bool': 'Boolean',
 	'boolean': 'Boolean',
 	'string': 'String',
-	'float': 'Double'
+	'float': 'Decimal'
 }
 
 
