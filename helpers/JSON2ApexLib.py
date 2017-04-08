@@ -1,17 +1,10 @@
-import sys
-import os
-import json
-import datetime
-import os.path
-import imp
-import sublime
-import sublime_plugin
 import json
 from .PatternClass import Pattern as Pattern
 
 
 def __init__():
 	pass
+
 
 types = {
 	float: 'Double',
@@ -93,9 +86,9 @@ class SampleConverter:
 					dics[className] = value[0]
 
 		return {
-				'pattern': pattern,
-				'dics': dics
-			}
+			'pattern': pattern,
+			'dics': dics
+		}
 
 	def generateClass(self, pattern):
 		res = ''

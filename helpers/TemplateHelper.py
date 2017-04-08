@@ -1,12 +1,6 @@
-import sys
 import os
-import json
-import datetime
 import os.path
-import imp
-import json
 import re
-from .templates import TemplateGetter as TG
 from .FileReader import FileReader as FR
 
 from . import logger
@@ -43,7 +37,7 @@ class Template():
 
 	def getTemplateCode(self):
 		# content = TG.getTemplates()[self.template_name]
-		
+
 		path_to_template = template_dir + self.template_name + template_extension
 		content = FR.read(path_to_template)
 		# content = None

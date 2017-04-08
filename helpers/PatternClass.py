@@ -3,8 +3,7 @@ import os.path
 import json
 import collections
 from .TemplateHelper import Template
-from .TemplateHelper import TemplateArgs
-from .YAMLer import YAMLer
+# from .YAMLer import YAMLer
 from .FileReader import FileReader as FR
 # import sublime, sublime_plugin
 from . import logger
@@ -13,6 +12,7 @@ log = logger.get(__name__)
 
 def __init__():
 	pass
+
 
 pattern_ext = '.json'
 pattern_dir = os.path.abspath(os.path.dirname(__file__)) + '/patterns/'
@@ -142,7 +142,6 @@ class Pattern:
 			class_type = 'abstract'
 		class_template.addVar('classType', class_type)
 		class_template.addVar('className', self.name)
-		self.formMethodOrder()
 		p = self.class_pattern
 
 		if 'extends' not in p:
@@ -174,9 +173,6 @@ class Pattern:
 		del class_template
 		return result
 
-	def formMethodOrder(self):
-		p = self.class_pattern
-
 	def genMethodCode(self, method_access, method_name, method_desc):
 		t = Template('other/Method')
 		t.addVar('access', method_access)
@@ -196,7 +192,7 @@ class Pattern:
 			for arg_name, arg_type in method_desc['arguments'].items():
 				arg_str += arg_type + ' ' + arg_name + ', '
 			if arg_str:
-				arg_str = arg_str[:len(arg_str)-2]
+				arg_str = arg_str[:len(arg_str) - 2]
 		t.addVar('methodArguments', arg_str)
 
 		if 'comment' in method_desc:
