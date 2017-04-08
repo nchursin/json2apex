@@ -114,7 +114,7 @@ class SampleConverter:
 				genRes = self.generatePatternFromSample(value, className)
 				root_pattern[key] = genRes['pattern'].class_pattern
 
-				classDfn += genRes['pattern'].generateCode('\t')
+				classDfn += genRes['pattern'].generateCode('\t') + '\n'
 
 				dics = self.mergeDicts(dics, genRes['dics'])
 			else:
@@ -140,7 +140,7 @@ class SampleConverter:
 
 	def generateTest(self):
 		if self.contents is not None:
-			test_method = '\n\t@isTest\n'
+			test_method = '\t@isTest\n'
 			test_method += '\tprivate static void testParser(){\n'
 			test_method += '\t\ttry{\n'
 			test_method += '\t\t\tRoot_object r = (Root_object)JSON.deserialize(\''

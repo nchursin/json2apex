@@ -2,6 +2,6 @@
 
 {${'\n'.join([('	{{intends}}' + prop) for prop in properties])}$}
 
-	{{methods}}
+{{methods}}
 	
 {{intends}}}
