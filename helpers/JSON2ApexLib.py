@@ -130,6 +130,7 @@ class SampleConverter:
 					' ' + oldClassName + ' ', ' ' + className + ' ')
 
 		classDfn += self.generateTest()
+		classDfn += self.generateFromJsonMethod()
 		classDfn += '\n}\n'
 
 		# list(d.values())
@@ -155,6 +156,14 @@ class SampleConverter:
 		else:
 			return ''
 
+	def generateFromJsonMethod(self):
+		# public static JSON2Apex parse(String json) {
+		# 	return (JSON2Apex) System.JSON.deserialize(json, JSON2Apex.class);
+		# }
+		fromjson_method = '\n\tpublic static Root_object parse(String jsonStr) {\n'
+		fromjson_method += '\t\treturn (Root_object) System.JSON.deserialize(jsonStr, Root_object.class);\n'
+		fromjson_method += '\t}'
+		return fromjson_method
 
 # def generateFromSchema(schema):
 # 	for key, value in schema.items():
