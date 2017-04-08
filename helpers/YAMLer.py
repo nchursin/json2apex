@@ -1,11 +1,13 @@
 # import yaml
 from collections import OrderedDict
 
+
 class YAMLer():
 	def __init__(self):
 		pass
 
-	# def ordered_load(self, stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
+	# def ordered_load(self, stream, Loader=yaml.Loader,
+	# object_pairs_hook=OrderedDict):
 	def ordered_load(self, stream, Loader=None, object_pairs_hook=OrderedDict):
 		pass
 		# class OrderedLoader(Loader):
