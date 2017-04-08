@@ -63,6 +63,8 @@ class Pattern:
 		if name_str.startswith('List<'):
 			name = name_str.replace('List<', '').replace('>Class', '').capitalize()
 			name = rreplace(name, 'class', 'Class', 1)
+		if name.endswith('Class'):
+			name = rreplace(name, 'Class', 'Cls', 1)
 		self.name = name
 		self.access = access
 		self.abstract = abstract
