@@ -1,4 +1,5 @@
 import json
+import re
 from .PatternClass import Pattern as Pattern
 
 
@@ -140,11 +141,12 @@ class SampleConverter:
 
 	def generateTest(self):
 		if self.contents is not None:
+			escaped_content = re.sub(r'([^\\])\'', r"\1\'", self.contents)
 			test_method = '\t@isTest\n'
 			test_method += '\tprivate static void testParser(){\n'
 			test_method += '\t\ttry{\n'
 			test_method += '\t\t\tRoot_object r = (Root_object)JSON.deserialize(\''
-			test_method += self.contents
+			test_method += escaped_content
 			test_method += '\', Root_object.class);\n'
 			test_method += '\t\t\tSystem.assert(true); // no error during parse\n'
 			test_method += '\t\t} catch (Exception ex){\n'
