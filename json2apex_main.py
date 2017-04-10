@@ -15,6 +15,7 @@ reloader.reload()
 
 from .helpers import JSON2ApexLib
 from .helpers import PatternClass
+from .helpers import Swagger2ApexLib
 # from . import logger
 # log = logger.get(__name__)
 
@@ -59,7 +60,7 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 class SwaggerToApexCommand(sublime_plugin.TextCommand):
 	apexClassView = {}
 	classList = []
-	
+
 	def run(self, edit):
 		api_object = self.getContent()
 		if(api_object is not None):
@@ -92,7 +93,6 @@ class SwaggerToApexCommand(sublime_plugin.TextCommand):
 			'classList': self.classList
 		}
 		print(args)
-		edit = self.apexClassView.begin_edit(0, '')
 		self.apexClassView.run_command('launch_class_renaming', args)
 
 # class YamlSchemaToApexCommand(sublime_plugin.TextCommand):
