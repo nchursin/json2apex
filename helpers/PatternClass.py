@@ -16,6 +16,8 @@ def __init__():
 pattern_ext = '.json'
 pattern_dir = os.path.abspath(os.path.dirname(__file__)) + '/patterns/'
 
+class_name_ending = 'Cls'
+
 
 def loadPattern(pattern_name):
 	pattern_path = pattern_dir + pattern_name + pattern_ext
@@ -61,10 +63,8 @@ class Pattern:
 		}
 		name_str = str(name)
 		if name_str.startswith('List<'):
-			name = name_str.replace('List<', '').replace('>Class', '').capitalize()
-			name = rreplace(name, 'class', 'Class', 1)
-		if name.endswith('Class'):
-			name = rreplace(name, 'Class', 'Cls', 1)
+			name = name_str.replace('List<', '').replace('>' + class_name_ending, '').capitalize()
+			name = rreplace(name, class_name_ending.lower(), class_name_ending, 1)
 		self.name = name
 		self.access = access
 		self.abstract = abstract
