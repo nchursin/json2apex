@@ -97,27 +97,37 @@ class Template():
 					placeholder, str(self.template_args.template_vars[name]))
 			else:
 				self.output = self.output.replace(placeholder, '')
-		if(debug):
-			log.debug('template >> ', self.output)
+		log.debug('before formatting >>> ' + self.output)
 		output_splitted = self.output.split('\n')
 		self.output = ''
-		empty_prev = False
+		remove_next_if_empty = False
 		for part in output_splitted:
-			if(debug):
-				log.debug('part >> ', part)
-				log.debug("re.match(r'^\s*$', part) >> ", not not re.match(r'^\s*$', part))
-				log.debug('empty_prev >> ', not not empty_prev)
-			if re.match(r'^\s*$', part) and empty_prev:
-				pass
+			if re.match(r'^\s*\}{0,1}$', part) and remove_next_if_empty:
+				if part.endswith('}'):
+					log.debug('to add >>> ' + part)
+					if self.checkIfLastLineEmpty(self.output):
+						self.output = self.output[:self.output.rindex('\n') + 1]
+						self.output += part
+					else:
+						self.output += part
+					remove_next_if_empty = False
+				else:
+					pass
 			else:
+				# if self.checkIfLastLineEmpty(self.output):
+				log.debug('to add >>> ' + '\n' + part)
 				self.output += '\n' + part
-				empty_prev = re.match(r'^\s*$', part)
+				remove_next_if_empty = re.match(r'^\s*$', part) or part.endswith('{')
 		self.output = ' '.join(
 			filter(
 				lambda x: not re.match(r'^\s*$', x),
 				self.output.split(' ')))
 		self.output = self.output[1:]
 		return self.output
+
+	def checkIfLastLineEmpty(self, text):
+		to_check = self.output[self.output.rindex('\n') + 1:]
+		return re.match(r'^\s*$', to_check)
 
 
 class TemplateArgs():

@@ -43,4 +43,8 @@ After renaming is over Sublime will select all the generated code for you to cop
 
 ## Future plans
 
-1. Swagger JSON to Apex REST Definition generation
+1. Swagger JSON to Apex REST Definition generation.
+
+## License
+
+MIT except for pyyaml.
