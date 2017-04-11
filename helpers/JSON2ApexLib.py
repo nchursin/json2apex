@@ -21,6 +21,8 @@ types = {
 	'float': 'Decimal'
 }
 
+class_name_ending = 'Cls'
+
 
 def find_between(s, first, last):
 	try:
@@ -49,8 +51,8 @@ class SampleConverter:
 		props.sort()
 		props = ','.join(props)
 		if '<' in className:
-			className = find_between(className.capitalize(), '<', 'class>')
-			className = className.capitalize() + 'Class'
+			className = find_between(className.capitalize(), '<', str(class_name_ending).lower() + '>')
+			className = className.capitalize() + class_name_ending
 		if props in self.formedClasses:
 			return self.formedClasses[props]
 		else:
@@ -61,14 +63,14 @@ class SampleConverter:
 	def getClassName(self, prop, key):
 		className = ''
 		if dict == type(prop):
-			className = key.capitalize() + 'Class'
+			className = key.capitalize() + class_name_ending
 		elif type(None) == type(prop):
 			className = 'String'
 		elif list == type(prop):
 			if(0 < len(prop)):
 				className = 'List<' + self.getClassName(prop[0], key) + '>'
 			else:
-				className = 'List<' + key.capitalize() + 'Class' + '>'
+				className = 'List<' + key.capitalize() + class_name_ending + '>'
 		else:
 			className = types[type(prop)]
 		return className
@@ -109,7 +111,7 @@ class SampleConverter:
 		classDfn += first_result['pattern'].generateCode('\t') + '\n'
 		while 0 != len(dics.keys()):
 			key, value = dics.popitem()
-			className = key.capitalize() + 'Class'
+			className = key.capitalize() + class_name_ending
 			classCheck = self.checkIsClassGenerated(value, className)
 			if classCheck is None:
 				genRes = self.generatePatternFromSample(value, className)
