@@ -1,4 +1,5 @@
 import json
+import re
 from .PatternClass import Pattern as Pattern
 
 
@@ -7,7 +8,7 @@ def __init__():
 
 
 types = {
-	float: 'Double',
+	float: 'Decimal',
 	int: 'Integer',
 	bool: 'Boolean',
 	str: 'String',
@@ -17,8 +18,10 @@ types = {
 	'bool': 'Boolean',
 	'boolean': 'Boolean',
 	'string': 'String',
-	'float': 'Double'
+	'float': 'Decimal'
 }
+
+class_name_ending = 'Cls'
 
 
 def find_between(s, first, last):
@@ -48,8 +51,8 @@ class SampleConverter:
 		props.sort()
 		props = ','.join(props)
 		if '<' in className:
-			className = find_between(className.capitalize(), '<', 'class>')
-			className = className.capitalize() + 'Class'
+			className = find_between(className.capitalize(), '<', str(class_name_ending).lower() + '>')
+			className = className.capitalize() + class_name_ending
 		if props in self.formedClasses:
 			return self.formedClasses[props]
 		else:
@@ -60,14 +63,14 @@ class SampleConverter:
 	def getClassName(self, prop, key):
 		className = ''
 		if dict == type(prop):
-			className = key.capitalize() + 'Class'
+			className = key.capitalize() + class_name_ending
 		elif type(None) == type(prop):
 			className = 'String'
 		elif list == type(prop):
 			if(0 < len(prop)):
 				className = 'List<' + self.getClassName(prop[0], key) + '>'
 			else:
-				className = 'List<' + key.capitalize() + 'Class' + '>'
+				className = 'List<' + key.capitalize() + class_name_ending + '>'
 		else:
 			className = types[type(prop)]
 		return className
@@ -108,13 +111,13 @@ class SampleConverter:
 		classDfn += first_result['pattern'].generateCode('\t') + '\n'
 		while 0 != len(dics.keys()):
 			key, value = dics.popitem()
-			className = key.capitalize() + 'Class'
+			className = key.capitalize() + class_name_ending
 			classCheck = self.checkIsClassGenerated(value, className)
 			if classCheck is None:
 				genRes = self.generatePatternFromSample(value, className)
 				root_pattern[key] = genRes['pattern'].class_pattern
 
-				classDfn += genRes['pattern'].generateCode('\t')
+				classDfn += genRes['pattern'].generateCode('\t') + '\n'
 
 				dics = self.mergeDicts(dics, genRes['dics'])
 			else:
@@ -130,6 +133,7 @@ class SampleConverter:
 					' ' + oldClassName + ' ', ' ' + className + ' ')
 
 		classDfn += self.generateTest()
+		classDfn += self.generateFromJsonMethod()
 		classDfn += '\n}\n'
 
 		# list(d.values())
@@ -139,11 +143,12 @@ class SampleConverter:
 
 	def generateTest(self):
 		if self.contents is not None:
-			test_method = '\n\t@isTest\n'
+			escaped_content = re.sub(r'([^\\])\'', r"\1\'", self.contents)
+			test_method = '\t@isTest\n'
 			test_method += '\tprivate static void testParser(){\n'
 			test_method += '\t\ttry{\n'
 			test_method += '\t\t\tRoot_object r = (Root_object)JSON.deserialize(\''
-			test_method += self.contents
+			test_method += escaped_content
 			test_method += '\', Root_object.class);\n'
 			test_method += '\t\t\tSystem.assert(true); // no error during parse\n'
 			test_method += '\t\t} catch (Exception ex){\n'
@@ -155,6 +160,14 @@ class SampleConverter:
 		else:
 			return ''
 
+	def generateFromJsonMethod(self):
+		# public static JSON2Apex parse(String json) {
+		# 	return (JSON2Apex) System.JSON.deserialize(json, JSON2Apex.class);
+		# }
+		fromjson_method = '\n\tpublic static Root_object parse(String jsonStr) {\n'
+		fromjson_method += '\t\treturn (Root_object) System.JSON.deserialize(jsonStr, Root_object.class);\n'
+		fromjson_method += '\t}'
+		return fromjson_method
 
 # def generateFromSchema(schema):
 # 	for key, value in schema.items():

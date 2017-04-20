@@ -3,9 +3,8 @@ import os.path
 import json
 import collections
 from .TemplateHelper import Template
-# from .YAMLer import YAMLer
+from .YAMLer import YAMLer
 from .FileReader import FileReader as FR
-# import sublime, sublime_plugin
 from . import logger
 log = logger.get(__name__)
 
@@ -16,6 +15,8 @@ def __init__():
 
 pattern_ext = '.json'
 pattern_dir = os.path.abspath(os.path.dirname(__file__)) + '/patterns/'
+
+class_name_ending = 'Cls'
 
 
 def loadPattern(pattern_name):
@@ -62,8 +63,8 @@ class Pattern:
 		}
 		name_str = str(name)
 		if name_str.startswith('List<'):
-			name = name_str.replace('List<', '').replace('>Class', '').capitalize()
-			name = rreplace(name, 'class', 'Class', 1)
+			name = name_str.replace('List<', '').replace('>' + class_name_ending, '').capitalize()
+			name = rreplace(name, class_name_ending.lower(), class_name_ending, 1)
 		self.name = name
 		self.access = access
 		self.abstract = abstract
@@ -84,12 +85,11 @@ class Pattern:
 
 	@classmethod
 	def fromYaml(cls, name, schema_str):
-		pass
 		# decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
-		# obj = cls(name, 'public')
-		# # obj.class_pattern = YAMLer.ordered_load( schema_str, yaml.SafeLoader )
-		# obj.class_pattern = YAMLer().ordered_load( schema_str )
-		# return obj
+		obj = cls(name, 'public')
+		# obj.class_pattern = YAMLer.ordered_load( schema_str, yaml.SafeLoader )
+		obj.class_pattern = YAMLer().ordered_load(schema_str)
+		return obj
 
 	def toJson(self):
 		return json.dumps(self.class_pattern)
