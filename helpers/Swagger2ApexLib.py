@@ -1,11 +1,14 @@
-import sys
-import os
-import json
-import datetime
-from PatternClass import Pattern as Pattern
-from TemplateHelper import Template as Template
-from TemplateHelper import TemplateArgs as TemplateArgs
-import os.path, imp, json
+# import sys
+# import os
+# import json
+# import datetime
+from .PatternClass import Pattern as Pattern
+from .TemplateHelper import Template as Template
+from .TemplateHelper import TemplateArgs as TemplateArgs
+# import os.path
+# import imp
+# import json
+
 
 restresource_template_path = 'RestResourse/'
 other_templates_path = 'other/'
@@ -27,6 +30,7 @@ templates = {
 	'OptionSet': other_templates_path + 'SetConstDefinition',
 }
 
+
 def parseSchemaForPaths(schema_object):
 	paths = schema_object['paths']
 	processed_paths = []
@@ -42,7 +46,7 @@ def parseSchemaForPaths(schema_object):
 			path_list = path.split(slash)
 			for part in path_list:
 				if '{' in part:
-					var_name = part.replace('{','').replace('}','')
+					var_name = part.replace('{', '').replace('}', '')
 				else:
 					var_name = 'Part' + str(i)
 					if var_name not in path_options:
@@ -58,10 +62,11 @@ def parseSchemaForPaths(schema_object):
 					retrievePathParamTemplate = Template(templates['retrievePathParam'])
 					retrievePathParamTemplate.addArgs(args)
 					processed_paths.append(var_name)
-					parsers.append( paramParserTemplate.compile() )
-					retrievers.append( retrievePathParamTemplate.compile() )
+					parsers.append(paramParserTemplate.compile())
+					retrievers.append(retrievePathParamTemplate.compile())
 				i += 1
 	return parsers, retrievers, path_options
+
 
 def createPathValidatorsFromOptions(path_options):
 	set_name_template = '{replace}_OPTIONS'
@@ -84,9 +89,10 @@ def createPathValidatorsFromOptions(path_options):
 		validators.append(validator_template.compile())
 	return sets, validators
 
+
 def parseParamsFromSchema(schema_object):
 	parameters = {
-		'query':[
+		'query': [
 			# {
 			# 	'name': '',
 			# 	'required': True
@@ -103,6 +109,7 @@ def parseParamsFromSchema(schema_object):
 						param['path_pattern'] = p
 						parameters[param['in']].append(param)
 	return parameters
+
 
 def generateCodeForParameters(schema_object):
 	parameters = parseParamsFromSchema(schema_object)
@@ -123,7 +130,7 @@ def generateCodeForParameters(schema_object):
 			paramType = param['type']
 		else:
 			paramType = 'String'
-		query_param_template.addVar('paramType', param['type'].capitalize())
+		query_param_template.addVar('paramType', paramType.capitalize())
 		query_param_template.addVar('paramName', param['name'])
 		if required:
 			query_param_template.addVar('urlPattern', param['path_pattern'])
@@ -137,6 +144,7 @@ def generateCodeForParameters(schema_object):
 
 	return query_params, body_defs, class_names
 
+
 def parseSchemaForMethods(schema_object):
 	paths = schema_object['paths']
 	processed_paths = []
@@ -147,22 +155,16 @@ def parseSchemaForMethods(schema_object):
 			if method in processed_paths:
 				continue
 			processed_paths.append(method)
-			template_vars = {
-				'method': method.upper()
-			}
-			template_args = {
-				'code_args': {},
-				'template_vars': template_vars
-			}
 			args = TemplateArgs()
 			args.addVar('method', method.upper())
 			methodHandlerTemplate = Template(templates['methodHandler'])
 			methodHandlerTemplate.addArgs(args)
 			methodCallerTemplate = Template(templates['methodCaller'])
 			methodCallerTemplate.addArgs(args)
-			handlers.append( methodHandlerTemplate.compile() )
-			callers.append( methodCallerTemplate.compile() )
+			handlers.append(methodHandlerTemplate.compile())
+			callers.append(methodCallerTemplate.compile())
 	return callers, handlers
+
 
 def parseSchemaForDefinitions(schema_object):
 	if 'definitions' not in schema_object:
@@ -171,8 +173,9 @@ def parseSchemaForDefinitions(schema_object):
 	code = []
 	for className, defin in definitions.items():
 		gen = parseDefintion(defin, className)
-		code.append( gen )
+		code.append(gen)
 	return code
+
 
 def parseDefintion(definition, def_name):
 	pattern = Pattern(def_name, inner_classes_access)
@@ -183,7 +186,7 @@ def parseDefintion(definition, def_name):
 				ext = p['$ref']
 				ext = ext.replace(definitions_const, '')
 				if slash in ext:
-					print ('Impossibru!!! Slash found in definition link after removing "#/definitions/"')
+					print('Impossibru!!! Slash found in definition link after removing "#/definitions/"')
 				else:
 					pattern.addParentClass(ext)
 			else:
@@ -195,12 +198,14 @@ def parseDefintion(definition, def_name):
 		return ''
 	return pattern.generateCode('\t')
 
+
 def addObjectToPattern(pattern, definition):
 	for var_name, var_props in definition['properties'].items():
-		pattern.addPublicProperty( var_props['type'].capitalize(), var_name )
+		pattern.addPublicProperty(var_props['type'].capitalize(), var_name)
+
 
 def parseSchema(schema_object):
-	classes_to_rename = [ defaultClassName ]
+	classes_to_rename = [defaultClassName]
 	apexrest_start = schema_object['basePath'].find(apexrest)
 	base_path = schema_object['basePath'][(apexrest_start + len(apexrest)):]
 	class_template = Template(templates['classTemplate'])
