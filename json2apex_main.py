@@ -37,10 +37,10 @@ class SchemaToApexCommand(sublime_plugin.TextCommand):
 			return None
 
 	def generateCode(self, edit, api_object):
-		pattern = PatternClass.Pattern.fromString('PatternClass', api_object)
+		pattern = PatternClass.Pattern.fromString('PatternCls', api_object)
 		gen = pattern.generateCode()
 		del(pattern)
-		self.classList = ["PatternClass"]
+		self.classList = ["PatternCls"]
 		self.apexClassView = sublime.active_window().new_file()
 		self.apexClassView.set_syntax_file(
 			'Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
@@ -75,10 +75,10 @@ class YamlSchemaToApexCommand(sublime_plugin.TextCommand):
 			return None
 
 	def generateCode(self, edit, api_object):
-		pattern = PatternClass.Pattern.fromYaml('PatternClass', api_object)
+		pattern = PatternClass.Pattern.fromYaml('PatternCls', api_object)
 		gen = pattern.generateCode()
 		del(pattern)
-		self.classList = ["PatternClass"]
+		self.classList = ["PatternCls"]
 		self.apexClassView = sublime.active_window().new_file()
 		self.apexClassView.set_syntax_file('Packages/MavensMate/sublime/lang/Apex.sublime-syntax')
 		self.apexClassView.insert(edit, 0, gen)

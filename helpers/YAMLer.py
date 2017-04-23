@@ -19,7 +19,10 @@ class YAMLer():
 			yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
 			construct_mapping)
 
-		return yaml.load(stream, OrderedLoader)
+		result = yaml.load(stream, OrderedLoader)
+		print('yaml.load(stream) >> ', yaml.load(stream))
+
+		return result
 
 # usage example:
 # ordered_load(stream, yaml.SafeLoader)
