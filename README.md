@@ -47,4 +47,4 @@ After renaming is over Sublime will select all the generated code for you to cop
 
 ## License
 
-MIT except for pyyaml.
+Apache 2.0 except for pyyaml.
