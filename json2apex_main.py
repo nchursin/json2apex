@@ -6,7 +6,7 @@ import sublime_plugin
 
 
 # Make sure all dependencies are reloaded on upgrade
-reloader_path = 'json2apex.helpers.reloader'
+reloader_path = 'JSON2Apex.helpers.reloader'
 if reloader_path in sys.modules:
 	imp.reload(sys.modules[reloader_path])
 

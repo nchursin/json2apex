@@ -5,7 +5,7 @@ from . import logger
 log = logger.get(__name__)
 
 # Dependecy reloader stolen from the Emmet plugin
-parent = 'json2Apex.helpers'
+parent = 'JSON2Apex.helpers'
 
 reload_mods = []
 

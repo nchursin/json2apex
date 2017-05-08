@@ -1,5 +1,21 @@
 [
 	{ "caption": "JSON2Apex: Convert sample to Apex", "command": "json_to_apex" },
 	{ "caption": "JSON2Apex: Convert JSON Schema to Apex", "command": "schema_to_apex" },
-	{ "caption": "JSON2Apex: Convert YAML Schema to Apex", "command": "yaml_schema_to_apex" }
+	{ "caption": "JSON2Apex: Convert YAML Schema to Apex", "command": "yaml_schema_to_apex" },
+
+
+	{
+        "caption": "Preferences: JSON2Apex – Default",
+        "command": "open_file", "args":
+        {
+            "file": "${packages}/JSON2Apex/JSON2Apex.sublime-settings"
+        }
+    },
+	{
+        "caption": "Preferences: JSON2Apex – User",
+        "command": "open_file", "args":
+        {
+            "file": "${packages}/User/JSON2Apex.sublime-settings"
+        }
+    },
 ]

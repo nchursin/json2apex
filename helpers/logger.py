@@ -1,8 +1,4 @@
-'''
-Logging module for Sublime Text plugins. Tries to emulate normal Python logger.
-by @blopker
-'''
-debug = False
+import sublime
 
 
 class Logger(object):
@@ -11,7 +7,9 @@ class Logger(object):
         self.name = name
 
     def debug(self, *messages):
-        if not debug:
+        settings = sublime.load_settings('JSON2Apex.sublime-settings')
+        debug_mode = settings.get("debug")
+        if not debug_mode:
             return
         self._out('DEBUG', *messages)
 
@@ -29,7 +27,9 @@ class Logger(object):
             return
 
         if len(messages) > 1:
-            message = messages[0] % tuple(messages[1:])
+            if isinstance(messages, tuple):
+                messages = [str(i) for i in messages]
+            message = ' '.join(messages)
         else:
             message = messages[0]
 
